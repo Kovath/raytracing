@@ -5,7 +5,7 @@ EXECUTABLE = raytracer
 CC = g++
 RM = rm -f
 CCFLAGS =
-LDFLAGS = 
+LDFLAGS = -I /lib
 
 ifeq ($(OS), Windows_NT)
     RM = del -f
