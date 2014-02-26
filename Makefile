@@ -20,15 +20,14 @@ endif
 
 
 all: $(SOURCES) $(EXECUTABLE)
-	
+build: clean $(EXECUTABLE)
+clean: 
+	$(RM) $(OBJECTS) $(EXECUTABLE)
+
 $(EXECUTABLE): $(OBJECTS) 
 	$(CC) $(CCFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
 .cpp.o:
 	$(CC) $(CCFLAGS) -c $< -o $@
-	
-build: clean $(EXECUTABLE)
-clean: 
-	$(RM) $(OBJECTS) $(EXECUTABLE)
  
 
 
