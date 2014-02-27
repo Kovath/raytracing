@@ -15,6 +15,9 @@
 **.a
 **.lib
 
+# Executables
+**.exe
+
 # vim .gitignore
 **[._]*.s[a-w][a-z]
 **[._]s[a-w][a-z] 
