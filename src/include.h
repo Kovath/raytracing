@@ -1,11 +1,12 @@
 #ifndef CS184_INCLUDE_H
 #define CS184_INCLUDE_H
 
-using namespace std;
-
 #include <iostream>
 #include <string>
 #include <vector>
+#include <Eigen/Core>
+
+using namespace std;
 
 typedef string String;
 

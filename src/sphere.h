@@ -3,18 +3,18 @@
 
 #include "include.h"
 #include "object.h"
-#include "vector3f.h"
-#include "point3f.h"
 
 class Sphere : public virtual Object {
     public:
         // center and radius define a sphere
-        Point3f center;
+        Eigen::Vector3f center;
         float radius;
 
         // constructors
         Sphere() {}
-        Sphere(Point3f center, float radius): center(center) radius(radius) {}
+        Sphere(Eigen::Vector3f center, float radius): center(center), radius(radius) {}
+
+        bool did_ray_hit(Ray r);
 };
 
 #endif // SPHERE_H

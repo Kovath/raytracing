@@ -9,13 +9,9 @@ SRCFOLDER := src
 OBJFOLDER := obj
 
 
-
-
-
-
 # processing stuff
-#SRC := $(wildcard $(SRCFOLDER)/*.cpp)
-SRC := src/main.cpp src/raytracer.cpp
+SRC := $(wildcard $(SRCFOLDER)/*.cpp)
+#SRC := src/main.cpp src/raytracer.cpp
 OBJ := $(addprefix $(OBJFOLDER)/, $(notdir $(SRC:.cpp=.o)))
 
 
