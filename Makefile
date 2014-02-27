@@ -33,11 +33,8 @@ clean:
 	$(RM) $(DELETEOBJS) $(PROJECT)
 	
 build: clean all
-	
-	
 
-	
-	
+
 # compile targets
 $(PROJECT): $(OBJ)
 	$(CC) $(CCFLAGS) $^ -o $@ $(LDFLAGS) 
