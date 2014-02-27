@@ -9,10 +9,6 @@ SRCFOLDER := src
 OBJFOLDER := obj
 
 
-
-
-
-
 # processing stuff
 SRC := $(wildcard $(SRCFOLDER)/*.cpp)
 OBJ := $(addprefix $(OBJFOLDER)/, $(notdir $(SRC:.cpp=.o)))
