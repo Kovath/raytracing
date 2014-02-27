@@ -16,6 +16,7 @@
 **.lib
 
 # Executables
+raytracer
 **.exe
 
 # vim .gitignore
