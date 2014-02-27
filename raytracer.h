@@ -19,28 +19,39 @@ private:
 
 
 // RAY TRACER CONFIGURATION
+
 class SettingType {
 public:
-	SettingType(String short_name, String long_name, int argc);
+	friend class Setting;
+
+	static const SettingType NO_TYPE; // "", "", 0
+	static const SettingType POINT_LIGHT; // "pl", "point-light", 6
+	static const SettingType DIRECTION_LIGHT; // "dl", "direction-light", 6
 	
+	//SettingType();
+	
+	bool   match(String option);
 	String get_short_name();
 	String get_long_name();
 	int    get_argc();
 
 private:
+	SettingType();
+	SettingType(String short_name, String long_name, int argc);
+
 	String short_name;
 	String long_name;
 	int    argc;
-}
+};
+
 
 class Setting {
 public:
-	RayTracerOption();
-    RayTracerOption(SettingType type);
+    Setting(SettingType type = SettingType::NO_TYPE);
     
 	void add_argument(String arg);
     vector<String> get_arguments();
-	SettingType get_setting_type();
+	SettingType get_type();
 	
 private:
 	SettingType type;

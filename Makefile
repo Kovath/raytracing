@@ -4,8 +4,8 @@ EXECUTABLE = raytracer
 
 CC = g++
 RM = rm -f
-CCFLAGS =
-LDFLAGS = 
+CCFLAGS = -Wall
+LDFLAGS = -I /lib/Eigen
 
 ifeq ($(OS), Windows_NT)
     RM = del -f
@@ -25,7 +25,7 @@ clean:
 	$(RM) $(OBJECTS) $(EXECUTABLE)
 
 $(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(CCFLAGS) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(CCFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
 .cpp.o:
 	$(CC) $(CCFLAGS) -c $< -o $@
  
