@@ -11,6 +11,5 @@ int main(int argc, char** argv) {
     rayTracer.render();
 	
 	// draw to image
-	
     return 0;
 }

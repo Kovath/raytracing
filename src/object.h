@@ -8,7 +8,7 @@
 class Object {
     public:
         // pure virtual function
-        virtual bool did_ray_hit(Ray r) =0;
+        virtual bool did_ray_hit(Ray r, float* intersection_t) =0;
 };
 
 #endif
