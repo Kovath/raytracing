@@ -18,16 +18,24 @@ OBJFOLDER := obj
 SRC := src/main.cpp src/raytracer.cpp
 OBJ := $(addprefix $(OBJFOLDER)/, $(notdir $(SRC:.cpp=.o)))
 
+ifeq ($(OS), Windows_NT)
+	RM = del /F
+	DELETEOBJS = $(OBJFOLDER)\*.o
+else
+	RM = rm -f
+	DELETEOBJS = $(OBJFOLDER)/*.o
+endif
+
+
+
+
+
 
 .PHONY: all clean build
 all: $(PROJECT)
 
 clean:
-ifeq ($(OS), Windows_NT)
-	del /F $(OBJFOLDER)\*.o $(PROJECT)
-else
-	$(RM) $(OBJFOLDER)/*.o $(PROJECT)
-endif
+	$(RM) $(DELETEOBJS) $(PROJECT)
 	
 build: clean all
 	
