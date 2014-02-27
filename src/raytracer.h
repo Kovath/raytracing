@@ -8,11 +8,11 @@
 class RayTracer {
 public:
 	RayTracer(vector<Setting>& settings);
-
-
+	
+	void render();
+	
 private:
-
-
+	//void trace(Point samplePoint);
 };
 
 #endif

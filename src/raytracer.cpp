@@ -3,3 +3,8 @@
 RayTracer::RayTracer(vector<Setting>& settings) {
 
 }
+
+
+void RayTracer::render() {
+	
+}

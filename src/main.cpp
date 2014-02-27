@@ -5,9 +5,12 @@ int main(int argc, char** argv) {
 	// parse command line inputs
 	cout << "Parsing input" << endl;
 	vector<Setting> settings = RTInputParser(argc, argv).get_settings();
-
-    // create raytracer and EXECUTE
+	
+    // create raytracer and RENDER
 	RayTracer rayTracer(settings);
-    
+    rayTracer.render();
+	
+	// draw to image
+	
     return 0;
 }
