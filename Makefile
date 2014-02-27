@@ -1,33 +1,42 @@
-SOURCES = main.cpp raytracer.cpp
-OBJECTS = $(SOURCES:.cpp=.o)
-EXECUTABLE = raytracer
+# CONFIGURATION
+PROJECT := raytracer
 
-CC = g++
-RM = rm -f
-CCFLAGS = -Wall
-LDFLAGS = -I /lib/Eigen
+CC := g++
+CCFLAGS := -Ilib -Wall
+LDFLAGS := 
 
+SRCFOLDER := src
+OBJFOLDER := obj
+
+
+
+
+
+
+# processing stuff
+#SRC := $(wildcard $(SRCFOLDER)/*.cpp)
+SRC := src/main.cpp src/raytracer.cpp
+OBJ := $(addprefix $(OBJFOLDER)/, $(notdir $(SRC:.cpp=.o)))
+
+
+.PHONY: all clean build
+all: $(PROJECT)
+
+clean:
 ifeq ($(OS), Windows_NT)
-    RM = del -f
+	del /F $(OBJFOLDER)\*.o $(PROJECT)
 else
-    UNAME_S := $(shell uname -s)
-    UNAME_P := $(shell uname -p)
-	
-	ifeq ($(UNAME_S), Linux)
-        
-    endif
+	$(RM) $(OBJFOLDER)/*.o $(PROJECT)
 endif
+	
+build: clean all
+	
+	
 
-
-all: $(SOURCES) $(EXECUTABLE)
-build: clean $(EXECUTABLE)
-clean: 
-	$(RM) $(OBJECTS) $(EXECUTABLE)
-
-$(EXECUTABLE): $(OBJECTS) 
-	$(CC) $(CCFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
-.cpp.o:
+	
+	
+# compile targets
+$(PROJECT): $(OBJ)
+	$(CC) $(CCFLAGS) $^ -o $@ $(LDFLAGS) 
+$(OBJFOLDER)/%.o: $(SRCFOLDER)/%.cpp
 	$(CC) $(CCFLAGS) -c $< -o $@
- 
-
-
