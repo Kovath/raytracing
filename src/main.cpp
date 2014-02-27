@@ -1,6 +1,8 @@
 #include "raytracer.h"
 #include <Eigen/Dense>
 
+#include "../test/ray_tests.cpp"
+
 using Eigen::MatrixXd;
 
 int main(int argc, char** argv) {
@@ -12,23 +14,24 @@ int main(int argc, char** argv) {
 	std::cout << m << std::endl;
 
 
+
     // parse command line inputs
 	vector<Setting> settings;
 	for(int i = 0; i < argc; i++) {
 		Setting setting;
-		
-		
+
+
 		int argCount = 0;
 		while(argCount < setting.get_type().get_argc()) {
 			setting.add_argument(argv[++i]);
 			argCount++;
 		}
-		
+
 		settings.push_back(setting);
 	}
-    
+
 	//cout << settings << endl;
     // create raytracer and EXECUTE
-    
+
     return 0;
 }

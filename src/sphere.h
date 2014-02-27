@@ -14,7 +14,8 @@ class Sphere : public virtual Object {
         Sphere() {}
         Sphere(Eigen::Vector3f center, float radius): center(center), radius(radius) {}
 
-        bool did_ray_hit(Ray r);
+        // sets the intersection time to float pointer t if ray hits object
+        bool did_ray_hit(Ray ray, float *intersection_t);
 };
 
 #endif // SPHERE_H
