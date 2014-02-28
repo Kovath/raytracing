@@ -6,16 +6,17 @@
 
 class Sphere : public virtual Primitive {
     public:
-        // center and radius define a sphere
-        Eigen::Vector3f center;
-        float radius;
-
         // constructors
-        Sphere() {}
-        Sphere(Eigen::Vector3f center, float radius): center(center), radius(radius) {}
+        Sphere();
+        Sphere(Eigen::Vector3f center, float radius);
 
         // sets the intersection time to float pointer t if ray hits object
         bool did_ray_hit(Ray ray, float *intersection_t);
+		
+	private:
+		// center and radius define a sphere
+        Eigen::Vector3f center;
+        float radius;
 };
 
 #endif // SPHERE_H

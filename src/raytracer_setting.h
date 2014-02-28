@@ -9,6 +9,7 @@ public:
 	static const SettingType DIRECTION_LIGHT; // "dl", "direction-light", 6
 	
 	bool   matches(String option) const;
+	
 	String get_short_name() const;
 	String get_short_command() const;
 	String get_long_name() const;

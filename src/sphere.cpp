@@ -1,5 +1,13 @@
 #include "sphere.h"
 
+Sphere::Sphere() {
+
+}
+
+Sphere::Sphere(Eigen::Vector3f center, float radius) : center(center), radius(radius) {
+
+}
+
 bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
     // a = dot(point, point)
     float a = ray.point.dot(ray.point);
