@@ -15,9 +15,11 @@ int main(int argc, char** argv) {
     // create array for results
     int results[2];
     // BASIC SPHERE TESTS
+    printf("\n");
     run_basic_sphere_tests(results);
     int basic_sphere_results[2] = { results[0], results[1] };
     // BASIC TRIANGLE TESTS
+    printf("\n");
     run_basic_triangle_tests(results);
     int basic_triangle_results[2] = { results[0], results[1] };
 
@@ -39,6 +41,7 @@ void run_basic_triangle_tests(int *results) {
     //          * -- * -- * (center is the origin)
     //          |    |    |
     // (-1, -1) * -- * -- * r8
+
     Ray r0(Eigen::Vector3f(-1, 1, 2),Eigen::Vector3f(-1, 1, 1));
     Ray r1(Eigen::Vector3f(0, 1, 2),Eigen::Vector3f(0, 1, 1));
     Ray r2(Eigen::Vector3f(1, 1, 2),Eigen::Vector3f(1, 1, 1));
@@ -55,7 +58,6 @@ void run_basic_triangle_tests(int *results) {
     float temp = 0;
     float *t = &temp;
     // TRIANGLE TESTS
-    printf("\n");
     printf("BEGIN || Triangle Tests\n");
     if (tri.did_ray_hit(r0, t)) {
         printf("r0 hit at %.02f\n", *t);
@@ -142,7 +144,6 @@ void run_basic_sphere_tests(int *results) {
     float temp = 0;
     float *t = &temp;
     // SPHERE TESTS
-    printf("\n");
     printf("BEGIN || Sphere Tests\n");
     if (sph.did_ray_hit(r0, t)) {
         printf("r0 hit at %.02f\n", *t);

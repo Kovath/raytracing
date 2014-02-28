@@ -46,3 +46,27 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t) {
     *intersection_t = intersection_plane_t;
     return true;
 }
+
+void Triangle::set_p0(Vector3f point) {
+    p0 = point;
+}
+
+void Triangle::set_p1(Vector3f point) {
+    p1 = point;
+}
+
+void Triangle::set_p2(Vector3f point) {
+    p2 = point;
+}
+
+Vector3f Triangle::get_p0() {
+    return p0;
+}
+
+Vector3f Triangle::get_p1() {
+    return p1;
+}
+
+Vector3f Triangle::get_p2() {
+    return p2;
+}
