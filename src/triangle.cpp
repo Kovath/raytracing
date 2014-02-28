@@ -1,5 +1,8 @@
 #include "triangle.h"
 
+Triangle::Triangle() {}
+Triangle::Triangle(Vector3f p0, Vector3f p1, Vector3f p2): p0(p0), p1(p1), p2(p2) {}
+
 bool Triangle::did_ray_hit(Ray ray, float *intersection_t) {
     // edges of the triangle and normal
     Vector3f e0, e1, n;
