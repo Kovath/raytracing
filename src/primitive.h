@@ -8,7 +8,7 @@
 class Primitive {
     public:
         // pure virtual function
-        virtual bool did_ray_hit(Ray r, float* intersection_t) =0;
+        virtual bool did_ray_hit(Ray r, float* intersection_t) = 0;
 
         // terms for determining the reflection
         float ambient_c, diffuse_c, specular_c;
