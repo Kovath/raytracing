@@ -12,6 +12,8 @@ public:
 	void render();
 	
 private:
+	
+	
 	//void trace(Point samplePoint);
 };
 
