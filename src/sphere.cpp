@@ -1,12 +1,7 @@
 #include "sphere.h"
 
-Sphere::Sphere() {
-
-}
-
-Sphere::Sphere(Eigen::Vector3f center, float radius) : center(center), radius(radius) {
-
-}
+Sphere::Sphere() {}
+Sphere::Sphere(Eigen::Vector3f center, float radius) : center(center), radius(radius) {}
 
 bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
     // a = dot(point, point)
@@ -53,4 +48,22 @@ bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
         *intersection_t = t0;
         return true;
     }
+}
+
+// setters
+void Sphere::set_center(Eigen::Vector3f center) {
+	this->center = center;
+}
+
+void Sphere::set_radius(float radius) {
+	this->radius = radius;
+}
+
+// getters
+Eigen::Vector3f Sphere::get_center() {
+	return center;
+}
+
+float Sphere::get_radius() {
+	return radius;
 }
