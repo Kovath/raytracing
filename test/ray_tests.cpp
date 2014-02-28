@@ -3,9 +3,12 @@
 #include "../src/sphere.h"
 #include "../src/ray.h"
 
+// using this means we don't have to qualify Eigen:: (but we still can if we want to)
+using Eigen::Vector3f;
+
 int main(int argc, char** argv) {
     // sphere at origin with radius 1
-    Sphere s(Eigen::Vector3f(0, 0, 0), 1);
+    Sphere s(Vector3f(0, 0, 0), 1);
 
     //      rays going down the z axis plane like so
     //       r0 * -- * -- * (1, 1)

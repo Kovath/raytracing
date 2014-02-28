@@ -2,9 +2,9 @@
 #define SPHERE_H
 
 #include "include.h"
-#include "object.h"
+#include "primitive.h"
 
-class Sphere : public virtual Object {
+class Sphere : public virtual Primitive {
     public:
         // center and radius define a sphere
         Eigen::Vector3f center;
