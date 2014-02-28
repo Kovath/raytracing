@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "../src/include.h"
 
 #include "../src/sphere.h"
