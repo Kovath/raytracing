@@ -10,6 +10,7 @@ class RectViewport : public Viewport {
         // constructors
         RectViewport() {}
         RectViewport(Quad port): port(port) { recompute_cell_properties(); }
+        RectViewport(Quad port, Vector2i new_resolution): port(port) { resolution = new_resolution; recompute_cell_properties(); }
 
         // override pure virtual function
         Cell get_cell(int x, int y);

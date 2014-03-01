@@ -4,11 +4,10 @@
 #include "include.h"
 #include "ray.h"
 
-// abstract base class for anything being rendered on the scene
+// base class for anything being rendered on the scene
 class Primitive {
     public:
-        // pure virtual function
-        virtual bool did_ray_hit(Ray r, float* intersection_t) = 0;
+        virtual bool did_ray_hit(Ray r, float* intersection_t) { return false; };
 
 		// getters
 		float get_ambient_c();

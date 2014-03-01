@@ -4,16 +4,29 @@
 
 #include "raytracer_setting.h"
 #include "point.h"
+#include "cell.h"
+#include "color.h"
+#include "scene.h"
+#include "sphere.h"
+#include "rectviewport.h"
+
+typedef Vector3f Eye;
 
 // RAYTRACER
 class RayTracer {
 public:
 	RayTracer(vector<Setting>& settings);
+    ~RayTracer();
 
 	void render();
 
 private:
-	//void trace(Point samplePoint);
+    Eye eye;
+    RectViewport viewport;
+    Color** color_buf;
+    Scene scene;
+
+    void trace(Cell c, int x, int y);
 };
 
 #endif

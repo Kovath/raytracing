@@ -1,15 +1,18 @@
 #include "sphere.h"
 
 Sphere::Sphere() {}
-Sphere::Sphere(Eigen::Vector3f center, float radius) : center(center), radius(radius) {}
+Sphere::Sphere(Point3f center, float radius) : center(center), radius(radius) {}
 
 bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
+    Point3f ray_origin = ray.get_origin();
+    Point3f ray_point = ray.get_point();
+
     // a = dot(point, point)
-    float a = ray.point.dot(ray.point);
+    float a = ray_point.dot(ray_point);
     // b = 2*dot((origin-center), point)
-    float b = 2 * ray.point.dot(ray.origin - center);
+    float b = 2 * ray_point.dot(ray_origin - center);
     // c = dot((origin - center), (origin - center)) - radius^2
-    float c = (ray.origin - center).dot(ray.origin - center) - (radius*radius);
+    float c = (ray_origin - center).dot(ray_origin - center) - (radius*radius);
     // DEBUG: printf("a: %.01f, b: %.01f, c: %.01f\n", a, b, c);
 
     // inside_root is the part inside the root of the quadratic equation
@@ -51,7 +54,7 @@ bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
 }
 
 // setters
-void Sphere::set_center(Eigen::Vector3f center) {
+void Sphere::set_center(Point3f center) {
 	this->center = center;
 }
 
@@ -60,7 +63,7 @@ void Sphere::set_radius(float radius) {
 }
 
 // getters
-Eigen::Vector3f Sphere::get_center() {
+Point3f Sphere::get_center() {
 	return center;
 }
 
