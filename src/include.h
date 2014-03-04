@@ -2,6 +2,7 @@
 #define CS184_INCLUDE_H
 
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include <vector>
 #include <math.h>

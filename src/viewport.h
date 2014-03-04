@@ -16,7 +16,7 @@ class Viewport {
         // getter functions
         Vector2i get_resolution();
 
-    protected:
+    private:
         // [ w ]
         // [ h ]
         Vector2i resolution;

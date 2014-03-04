@@ -4,39 +4,46 @@
 #include <unistd.h>
 
 int main(int argc, char** argv) {
-	Timer timer;
+	Timer program_timer;
+	Timer task_timer;
 
+	program_timer.start();
+	
 	// parse command line inputs
 	cout << "Parsing input: ";
-	timer.start();
+	task_timer.start();
 	
 	vector<Setting> settings = RTInputParser(argc, argv).get_settings();
 	
-	timer.stop();
-	cout << timer.get_duration_s() << " s" << endl;
+	task_timer.stop();
+	cout << task_timer.get_duration_s() << " s" << endl;
 	
 	
 	
     // create raytracer and RENDER
 	cout << "Raytracer Rendering: ";
-	timer.start();
+	task_timer.start();
 	
 	RayTracer rayTracer(settings);
     rayTracer.render();
 	
-	timer.stop();
-	cout << timer.get_duration_s() << " s" << endl;
+	task_timer.stop();
+	cout << task_timer.get_duration_s() << " s" << endl;
 	
 	
 	
 	// draw to image
     cout << "Saving to image: ";
-	timer.start();
+	task_timer.start();
 	
-	cout << "NOT IMPLMENTED ";
+	rayTracer.save();
 	
-	timer.stop();
-	cout << timer.get_duration_s() << " s" << endl;
+	task_timer.stop();
+	cout << task_timer.get_duration_s() << " s" << endl;
+	
+	
+	program_timer.stop();
+	cout << endl << "Total Time: " << program_timer.get_duration_s() << " s" << endl;
 	
 	return 0;
 }

@@ -25,10 +25,14 @@ public:
 	void save();
 	
 private:
+	// Image drwaing configuration
     Eye eye;
     RectViewport viewport;
     Color** color_buf;
     Scene scene;
+	
+	// output file string
+	const char* filename;
 
     void trace(Cell c, int x, int y);
 };

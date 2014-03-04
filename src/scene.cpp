@@ -16,7 +16,7 @@ Color Scene::handle_ray(Ray r) {
     if (did_collide(r, t)) {
         Point3f collision_point = r.point_at_time(*t);
         // go through all the lights checking if a ray from that point would hit the light
-        for (int i=0; i<lights.size(); i++) {
+        for (unsigned int i=0; i<lights.size(); i++) {
             int num = 0;
             int *n = &num;
             // get positions to interpolate the light from
@@ -44,7 +44,7 @@ bool Scene::did_collide(Ray r, float *t) {
 
     float temp = 0;
     float *tmp = &temp;
-    for (int i=0; i<objects.size(); i++) {
+    for (unsigned int i=0; i<objects.size(); i++) {
         if (objects[i].did_ray_hit(r, tmp)) {
             if (*tmp < min_time || min_time == -1) {
                 min_time = *tmp;
