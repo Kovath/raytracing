@@ -4,6 +4,9 @@ Triangle::Triangle() {}
 Triangle::Triangle(Vector3f p0, Vector3f p1, Vector3f p2): p0(p0), p1(p1), p2(p2) {}
 
 bool Triangle::did_ray_hit(Ray ray, float *intersection_t) {
+    Point3f ray_point = ray.get_point();
+    Point3f ray_origin = ray.get_origin();
+
     // edges of the triangle and normal
     Vector3f e0, e1, n;
     // Q = point on the plane
@@ -21,18 +24,18 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t) {
 
     // we can now find the time the ray hits the plane the triangle is on
     // t = (dot(n, point of triangle) - dot(n, ray.origin)) / (dot(n, ray.point))
-    float bottom = n.dot(ray.point);
+    float bottom = n.dot(ray_point);
 
     // if the bottom is 0 then the ray is parallel to the plane (return false)
     if (bottom == 0) return false;
 
-    float intersection_plane_t = (n.dot(p0) - n.dot(ray.origin)) / bottom;
+    float intersection_plane_t = (n.dot(p0) - n.dot(ray_origin)) / bottom;
 
     // if the time the ray hits the plane is negative, the plane is behind the ray
     if (intersection_plane_t < 0) return false;
 
     // calculate the point on the play that the ray hits
-    Q = ray.origin + intersection_plane_t*ray.point;
+    Q = ray_origin + intersection_plane_t*ray_point;
 
     // to test if the point Q is inside the plane, we compare the normal of the plane
     // with the cross product of each edge of the triangle

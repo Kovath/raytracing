@@ -11,15 +11,15 @@ class Viewport {
         Cell virtual get_cell(int x, int y) =0;
 
         // setter functions
-        void set_resolution(Vector2f new_resolution);
+        void set_resolution(Vector2i new_resolution);
 
         // getter functions
-        Vector2f get_resolution();
+        Vector2i get_resolution();
 
     protected:
         // [ w ]
         // [ h ]
-        Vector2f resolution;
+        Vector2i resolution;
 };
 
 #endif // VIEWPORT_H
