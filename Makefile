@@ -42,6 +42,6 @@ $(TESTFOLDER)/%.o: $(TESTFOLDER)/%.cpp
 	
 # compile targets
 $(PROJECT): $(OBJ)
-	$(CC) $(CCFLAGS) $^ -o $@ $(LDFLAGS) 
+	$(CC) $(CCFLAGS) -o $@ $^ $(LDFLAGS)
 $(OBJFOLDER)/%.o: $(SRCFOLDER)/%.cpp
-	$(CC) $(CCFLAGS) -c $< -o $@
+	$(CC) $(CCFLAGS) -o $@ -c $< $(LDFLAGS)
