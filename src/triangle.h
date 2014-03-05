@@ -12,7 +12,7 @@ class Triangle : public virtual Primitive {
         Triangle(Point3f p0, Vector3f p1, Vector3f p2);
 
         // sets the intersection time to float pointer t if ray hits object
-        bool did_ray_hit(Ray ray, float *intersection_t);
+        bool did_ray_hit(Ray ray, float *intersection_t, float epsilon=0);
 
         // setter functions
         void set_p0(Point3f p);

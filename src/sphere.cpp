@@ -3,7 +3,7 @@
 Sphere::Sphere() {}
 Sphere::Sphere(Point3f center, float radius) : center(center), radius(radius) {}
 
-bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
+bool Sphere::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
     Point3f ray_origin = ray.get_origin();
     Point3f ray_point = ray.get_point();
 
@@ -34,15 +34,15 @@ bool Sphere::did_ray_hit(Ray ray, float *intersection_t) {
         t1 = temp;
     }
 
-    // DEBUG: printf("t0: %.01f, t1: %.01f\n", t0, t1);
+    // DEBUG:: printf("t0: %.01f, t1: %.01f\n", t0, t1);
 
-    // if the greater time is negative, we don't hit the object (behind the camera)
-    if (t1 < 0) {
+    // if the greater time is less than epsilon, we don't hit the object (behind the camera)
+    if (t1 < epsilon) {
         return false;
     }
     // if the smaller time is the only one negative, then the ray starts inside the sphere
     // intersection time is at the non-negative time (t1)
-    if (t0 < 0) {
+    if (t0 < epsilon) {
         *intersection_t = t1;
         return true;
     }
@@ -69,4 +69,9 @@ Point3f Sphere::get_center() {
 
 float Sphere::get_radius() {
 	return radius;
+}
+
+// cout <<
+ostream& operator<< (ostream& ostream, const Sphere s) {
+    return ostream << "Sphere: center(" << vectorString(s.center).c_str() << ") radius:" << s.radius << endl;
 }

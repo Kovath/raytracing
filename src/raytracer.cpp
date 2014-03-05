@@ -9,9 +9,9 @@ typedef thread Thread;
 RayTracer::RayTracer(vector<Setting>& settings) {
     eye = Point3f(0, 0, 100);
 
-    // create a rectangle viewport on the xy plane at z=5000
-    Quad port(Point3f(-5000, 5000, 5000), Vector3f(100, 0, 0), Vector3f(0, -100, 0));
-    Vector2i resolution(1000, 1000);
+    // create a rectangle viewport on the xy plane at z=50
+    Quad port(Point3f(-50, 50, 50), Vector3f(100, 0, 0), Vector3f(0, -100, 0));
+    Vector2i resolution(400, 400);
     viewport = RectViewport(port, resolution);
 
 	// BE EXRTREMEMLY CAREFUL YOU DO NOT ASSIGN TO THE ARRAY. IF YOU DO
@@ -19,8 +19,10 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     color_buf = new Color*[resolution[0]];
     for(int i=0; i<resolution[0]; i++)
         color_buf[i] = new Color[resolution[1]];
-
-    scene.add_object(Sphere(Point3f(0,0,0), 2500));
+    Sphere *s = new Sphere(Point3f(0,0,0), 50);
+    scene.add_object(s);
+    PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1,1,1));
+    scene.add_light(pl);
 }
 
 RayTracer::~RayTracer() {
@@ -30,7 +32,7 @@ RayTracer::~RayTracer() {
 }
 
 void RayTracer::render() {
-	int thread_count = 8;
+	int thread_count = 64;
 	
 	list<Thread*> threads;
 	ThreadData* data = new ThreadData[thread_count];
@@ -63,9 +65,13 @@ void thread_trace(void* d) {
     int width = resolution[0];
     int height = resolution[1];
 	
-	int workload = (height / thread_count); 
+	int workload = (height / thread_count);
 	int start_row = thread_number * workload;
-	int end_row = (thread_number + 1) * workload + ((thread_number + 1) == thread_count) ? height % thread_count : 0;
+	int end_row = (thread_number + 1) * workload;
+
+	if((thread_number + 1) == thread_count) {
+		end_row += ((thread_number + 1) == thread_count) ? height % thread_count : 0;
+	}
 	
 	// fill out the color array
     for (int j = start_row; j < end_row; j++) {
@@ -95,10 +101,9 @@ void RayTracer::save() {
 			image[y * width * 3 + x * 3 + 2] = (int)(color_buf[x][y].b * 255.0);
 		}
 	}
-	
-	
+
 	// DLETE
-	filename = "0.png";
+	filename = "img/0.png";
 	lodepng_encode24_file(filename, image, width, height);
 	delete[] image;
 }

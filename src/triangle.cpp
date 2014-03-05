@@ -3,7 +3,7 @@
 Triangle::Triangle() {}
 Triangle::Triangle(Vector3f p0, Vector3f p1, Vector3f p2): p0(p0), p1(p1), p2(p2) {}
 
-bool Triangle::did_ray_hit(Ray ray, float *intersection_t) {
+bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
     Point3f ray_point = ray.get_point();
     Point3f ray_origin = ray.get_origin();
 
@@ -31,8 +31,8 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t) {
 
     float intersection_plane_t = (n.dot(p0) - n.dot(ray_origin)) / bottom;
 
-    // if the time the ray hits the plane is negative, the plane is behind the ray
-    if (intersection_plane_t < 0) return false;
+    // if the time the ray hits the plane is less than epsilon, the plane is behind the ray
+    if (intersection_plane_t < epsilon) return false;
 
     // calculate the point on the play that the ray hits
     Q = ray_origin + intersection_plane_t*ray_point;

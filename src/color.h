@@ -1,6 +1,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "include.h"
+
 class Color {
     public:
         float r, g, b;
@@ -10,9 +12,10 @@ class Color {
         Color(float r, float g, float b): r(r), g(g), b(b) {}
 
 		char toRGB(bool big_endian = true);
-		
+
         friend Color operator+(const Color &a, const Color &b);
         friend Color operator/(const Color &a, float n);
+        friend ostream& operator<<(ostream& o, const Color &c);
 };
 
 #endif // COLOR_H

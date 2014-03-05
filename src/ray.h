@@ -15,6 +15,8 @@ class Ray {
 
         Point3f point_at_time(float t);
 
+        friend ostream& operator<< (ostream& ostream, const Ray r);
+
         // setter functions
         void set_origin(Point3f origin);
         void set_pointAtT1(Point3f pointAtT1);

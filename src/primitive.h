@@ -7,7 +7,7 @@
 // base class for anything being rendered on the scene
 class Primitive {
     public:
-        virtual bool did_ray_hit(Ray r, float* intersection_t) { return false; };
+        virtual bool did_ray_hit(Ray r, float* intersection_t, float epsilon=0) { printf("primitive did_ray_hit!!!!\n"); return false; };
 
 		// getters
 		float get_ambient_c();
@@ -21,6 +21,9 @@ class Primitive {
 		void set_diffuse_c(float diffuse);
 		void set_specular_c(float specular);
 		void set_specular_power(float specular_power);
+
+        // cout <<
+        friend ostream& operator<< (ostream& ostream, const Primitive p) { return ostream << "Primitive" << endl; };
 
 	private:
 		// terms for determining the reflection
