@@ -18,12 +18,39 @@ Color operator+(const Color &a, const Color &b) {
     return Color(a.r + b.r, a.g + b.g, a.b + b.b);
 }
 
+Color Color::operator+=(const Color&a) {
+    this->r += a.r;
+    this->b += a.b;
+    this->g += a.g;
+    return *this;
+}
+
 Color operator*(const Color &a, const Color &b) {
     return Color(a.r * b.r, a.g * b.g, a.b * b.b);
 }
 
 Color operator*(const Color &a, float n) {
     return Color(a.r * n, a.g * n, a.b * n);
+}
+
+Color Color::operator*=(const Color&a) {
+    this->r *= a.r;
+    this->b *= a.b;
+    this->g *= a.g;
+    return *this;
+}
+
+Color Color::operator/=(const Color&a) {
+    this->r /= a.r;
+    this->b /= a.b;
+    this->g /= a.g;
+    return *this;
+}
+Color Color::operator/=(int n) {
+    this->r /= n;
+    this->b /= n;
+    this->g /= n;
+    return *this;
 }
 
 Color operator*(float n, const Color &a) {

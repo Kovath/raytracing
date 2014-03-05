@@ -14,8 +14,12 @@ class Color {
 		char toRGB(bool big_endian = true);
 
         friend Color operator+(const Color &a, const Color &b);
+        Color operator+=(const Color &a);
         friend Color operator/(const Color &a, float n);
+        Color operator/=(const Color &a);
+        Color operator/=(int n);
         friend Color operator*(const Color &a, const Color &b);
+        Color operator*=(const Color &a);
         friend Color operator*(const Color &a, float n);
         friend Color operator*(float n, const Color &a);
         friend ostream& operator<<(ostream& o, const Color &c);
