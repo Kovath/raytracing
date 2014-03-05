@@ -52,7 +52,7 @@ bool Scene::did_collide(Ray r, float *t) {
     float temp = 0;
     float *tmp = &temp;
     for (unsigned int i=0; i<objects.size(); i++) {
-        if (objects[i]->did_ray_hit(r, tmp)) {
+        if (objects[i]->did_ray_hit(r, tmp, 0.05)) {
             if (*tmp < min_time || min_time == -1) {
                 min_time = *tmp;
             }

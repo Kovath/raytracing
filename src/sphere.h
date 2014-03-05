@@ -11,7 +11,7 @@ class Sphere : public virtual Primitive {
         Sphere(Point3f center, float radius);
 
         // sets the intersection time to float pointer t if ray hits object
-        bool did_ray_hit(Ray ray, float *intersection_t);
+        bool did_ray_hit(Ray ray, float *intersection_t, float epsilon=0);
 
 		// setters
 		void set_center(Point3f center);

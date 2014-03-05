@@ -62,7 +62,7 @@ void RayTracer::save() {
 	}
 
 	// DLETE
-	filename = "0.png";
+	filename = "img/0.png";
 	lodepng_encode24_file(filename, image, width, height);
 	delete[] image;
 }

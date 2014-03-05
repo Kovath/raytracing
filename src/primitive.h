@@ -7,7 +7,7 @@
 // base class for anything being rendered on the scene
 class Primitive {
     public:
-        virtual bool did_ray_hit(Ray r, float* intersection_t) { printf("primitive did_ray_hit!!!!\n"); return false; };
+        virtual bool did_ray_hit(Ray r, float* intersection_t, float epsilon=0) { printf("primitive did_ray_hit!!!!\n"); return false; };
 
 		// getters
 		float get_ambient_c();
