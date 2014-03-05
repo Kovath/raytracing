@@ -11,7 +11,7 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
     // create a rectangle viewport on the xy plane at z=50
     Quad port(Point3f(-50, 50, 50), Vector3f(100, 0, 0), Vector3f(0, -100, 0));
-    Vector2i resolution(400, 400);
+    Vector2i resolution(500, 500);
     viewport = RectViewport(port, resolution);
 
 	// BE EXRTREMEMLY CAREFUL YOU DO NOT ASSIGN TO THE ARRAY. IF YOU DO
@@ -19,9 +19,12 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     color_buf = new Color*[resolution[0]];
     for(int i=0; i<resolution[0]; i++)
         color_buf[i] = new Color[resolution[1]];
-    Sphere *s = new Sphere(Point3f(0,0,0), 50);
-    s->set_shading_c(Color(0.5, 0.1, 0), Color(0.5, 0.2, 0), Color(0.8, 0.8, 0.8), 80);
+    Sphere *s = new Sphere(Point3f(0,0,0), 25);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.8, 0.8, 0.8), 80);
     scene.add_object(s);
+    Triangle *t = new Triangle(Vector3f(0, 92.3760430703, 0), Vector3f(-80, -46.188, 0), Vector3f(80, -46.188, 0));
+    t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.4, 0.1, 0.2), Color(0.8, 0.8, 0.8), 80);
+    scene.add_object(t);
     PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1,1,1));
     scene.add_light(pl);
 }
@@ -83,29 +86,37 @@ void thread_trace(void* d) {
 }
 
 void RayTracer::trace(Cell c, int x, int y) {
-    // create jittered ray grid with size
-    int gridx = 5;
-    int gridy = 5;
-
-    Vector3f grid_w = c.get_width() / gridx;
-    Vector3f grid_h = c.get_height() / gridy;
-
+    bool antialias = true;
     Color total_c(0,0,0);
-    for (int j=0; j<gridy; j++) {
-        for (int i=0; i<gridx; i++) {
-            // the seed must be the same for each ray x, y, i, j
-            srand(x*4321 + y*1234 + i*12 + j*21);
 
-            // [-0.3 -- 0.3] * grid_w x value * grid_h y value
-            Vector3f jitter((((rand() % 60) / 1000) - 0.3) * grid_w[0],
-                            (((rand() % 60) / 1000) - 0.3) * grid_h[1],
-                            0);
-            Ray r(eye, c.get_top_left() + grid_w/2 + grid_h/2 + jitter
-                    + grid_w*i + grid_h*j);
-            total_c += scene.handle_ray(r);
+    if (antialias) {
+        // create jittered ray grid with size
+        int gridx = 5;
+        int gridy = 5;
+
+        Vector3f grid_w = c.get_width() / gridx;
+        Vector3f grid_h = c.get_height() / gridy;
+
+        for (int j=0; j<gridy; j++) {
+            for (int i=0; i<gridx; i++) {
+                // the seed must be the same for each ray x, y, i, j
+                srand(x*4321 + y*1234 + i*12 + j*21);
+
+                // [-0.3 -- 0.3] * grid_w x value * grid_h y value
+                Vector3f jitter((((rand() % 60) / 1000) - 0.3) * grid_w[0],
+                                (((rand() % 60) / 1000) - 0.3) * grid_h[1],
+                                0);
+                Ray r(eye, c.get_top_left() + grid_w/2 + grid_h/2 + jitter
+                        + grid_w*i + grid_h*j);
+                total_c += scene.handle_ray(r);
+            }
         }
+        total_c /= gridx * gridy;
     }
-    total_c /= gridx * gridy;
+    else {
+        Ray r(eye, c.get_center());
+        total_c = scene.handle_ray(r);
+    }
     if (total_c.r > 1.0) total_c.r = 1.0;
     if (total_c.g > 1.0) total_c.g = 1.0;
     if (total_c.b > 1.0) total_c.b = 1.0;

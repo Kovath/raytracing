@@ -53,6 +53,12 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 
     return true;
 }
 
+Vector3f Triangle::get_normal(Point3f point) {
+    Vector3f ret = (p1 - p0).cross(p2 - p0);
+    ret.normalize();
+    return ret;
+}
+
 void Triangle::set_p0(Vector3f point) {
     p0 = point;
 }

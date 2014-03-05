@@ -9,6 +9,7 @@
 #include "color.h"
 #include "scene.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "rectviewport.h"
 #include "pointlight.h"
 
