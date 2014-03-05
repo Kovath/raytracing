@@ -16,7 +16,7 @@ class Light {
         // getter functions
         Color get_intensity();
 
-    private:
+    protected:
         Color intensity;
 };
 

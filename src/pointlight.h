@@ -4,9 +4,14 @@
 #include "include.h"
 #include "light.h"
 
-class PointLight : Light {
+class PointLight : public Light {
     public:
         Point3f* get_positions(int *num_ptr);
+
+        // constructors
+
+        PointLight() {}
+        PointLight(Point3f position, Color intensity): position(position) {set_intensity(intensity);}
 
         // setter functions
         void set_position(Point3f p);

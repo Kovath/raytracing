@@ -19,3 +19,14 @@ Point3f Ray::get_point() {
 Point3f Ray::point_at_time(float t) {
     return origin + t*point;
 }
+
+ostream& operator<< (ostream& ostream, const Ray r) {
+    Point3f o = r.origin;
+    Point3f p = r.point;
+    return ostream << "Ray: o(" << o[0] << ", " <<
+        o[1] << "," <<
+        o[2] << ") p(" <<
+        p[0] << ", " <<
+        p[1] << ", " <<
+        p[2] << ")" << endl;
+}

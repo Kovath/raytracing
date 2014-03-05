@@ -12,9 +12,9 @@ class Scene {
         Scene() {}
 
         // adds an object to the object list
-        void add_object(Primitive p);
+        void add_object(Primitive *p);
         // adds a light to the light list
-        void add_light(Light l);
+        void add_light(Light *l);
 
         // returns a color after bouncing the ray through the scene
         Color handle_ray(Ray r);
@@ -23,8 +23,8 @@ class Scene {
         bool did_collide(Ray r, float *t);
 
     private:
-        vector<Primitive> objects;
-        vector<Light> lights;
+        vector<Primitive*> objects;
+        vector<Light*> lights;
 };
 
 #endif // SCENE_H

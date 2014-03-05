@@ -21,6 +21,9 @@ class Sphere : public virtual Primitive {
 		Point3f get_center();
 		float get_radius();
 
+        // to_string
+        friend ostream& operator<< (ostream& ostream, const Sphere p);
+
 	private:
 		// center and radius define a sphere
         Point3f center;
