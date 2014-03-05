@@ -11,7 +11,7 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
     // create a rectangle viewport on the xy plane at z=50
     Quad port(Point3f(-50, 50, 50), Vector3f(100, 0, 0), Vector3f(0, -100, 0));
-    Vector2i resolution(400, 400);
+    Vector2i resolution(1000, 1000);
     viewport = RectViewport(port, resolution);
 
 	// BE EXRTREMEMLY CAREFUL YOU DO NOT ASSIGN TO THE ARRAY. IF YOU DO
@@ -33,7 +33,7 @@ RayTracer::~RayTracer() {
 }
 
 void RayTracer::render() {
-	int thread_count = 64;
+	int thread_count = 8;
 	
 	list<Thread*> threads;
 	ThreadData* data = new ThreadData[thread_count];
@@ -71,7 +71,7 @@ void thread_trace(void* d) {
 	int end_row = (thread_number + 1) * workload;
 
 	if((thread_number + 1) == thread_count) {
-		end_row += ((thread_number + 1) == thread_count) ? height % thread_count : 0;
+		end_row += height % thread_count;
 	}
 	
 	// fill out the color array
@@ -94,15 +94,15 @@ void RayTracer::trace(Cell c, int x, int y) {
 
 void RayTracer::save() {
 	Vector2i resolution = viewport.get_resolution();
-	unsigned int width = resolution[0];
-	unsigned int height = resolution[1];
+	int width = resolution[0];
+	int height = resolution[1];
 
 	unsigned char* image = new unsigned char[width * height * 3];
-	for(unsigned int x = 0; x < width; x++) {
-		for(unsigned int y = 0; y < height; y++) {
-			image[y * width * 3 + x * 3 + 0] = (int)(color_buf[x][y].r * 255.0);
-			image[y * width * 3 + x * 3 + 1] = (int)(color_buf[x][y].g * 255.0); 
-			image[y * width * 3 + x * 3 + 2] = (int)(color_buf[x][y].b * 255.0);
+	for(int x = 0; x < width; x++) {
+		for(int y = 0; y < height; y++) {
+			image[(y * width + x) * 3 + 0] = (int)(color_buf[x][y].r * 255.0);
+			image[(y * width + x) * 3 + 1] = (int)(color_buf[x][y].g * 255.0); 
+			image[(y * width + x) * 3 + 2] = (int)(color_buf[x][y].b * 255.0);
 		}
 	}
 
