@@ -34,15 +34,15 @@ RayTracer::~RayTracer() {
 
 void RayTracer::render() {
 	int thread_count = 8;
-	
+
 	list<Thread*> threads;
 	ThreadData* data = new ThreadData[thread_count];
-	
+
 	for(int i = 0; i < thread_count; i++) {
 		data[i].thread_count = thread_count;
 		data[i].thread_number = i;
 		data[i].tracer = this;
-	
+
 		Thread* thread = new Thread(thread_trace, (void*)(&(data[i])));
 		threads.push_back(thread);
 	}
@@ -60,12 +60,12 @@ void thread_trace(void* d) {
 	RayTracer* tracer = data->tracer;
 	int thread_count = data->thread_count;
 	int thread_number = data->thread_number;
-	
+
 	// pulling extra info
 	Vector2i resolution = tracer->viewport.get_resolution();
     int width = resolution[0];
     int height = resolution[1];
-	
+
 	int workload = (height / thread_count);
 	int start_row = thread_number * workload;
 	int end_row = (thread_number + 1) * workload;
@@ -73,7 +73,7 @@ void thread_trace(void* d) {
 	if((thread_number + 1) == thread_count) {
 		end_row += height % thread_count;
 	}
-	
+
 	// fill out the color array
     for (int j = start_row; j < end_row; j++) {
         for (int i = 0; i < width; i ++) {
@@ -83,13 +83,33 @@ void thread_trace(void* d) {
 }
 
 void RayTracer::trace(Cell c, int x, int y) {
-    // create jittered ray grid here later
-    Ray r(eye, c.get_center());
+    // create jittered ray grid with size
+    int gridx = 5;
+    int gridy = 5;
 
-    color_buf[x][y] = scene.handle_ray(r);
-    if (color_buf[x][y].r > 1.0) color_buf[x][y].r = 1.0;
-    if (color_buf[x][y].g > 1.0) color_buf[x][y].g = 1.0;
-    if (color_buf[x][y].b > 1.0) color_buf[x][y].b = 1.0;
+    Vector3f grid_w = c.get_width() / gridx;
+    Vector3f grid_h = c.get_height() / gridy;
+
+    Color total_c(0,0,0);
+    for (int j=0; j<gridy; j++) {
+        for (int i=0; i<gridx; i++) {
+            // the seed must be the same for each ray x, y, i, j
+            srand(x*4321 + y*1234 + i*12 + j*21);
+
+            // [-0.3 -- 0.3] * grid_w x value * grid_h y value
+            Vector3f jitter((((rand() % 60) / 1000) - 0.3) * grid_w[0],
+                            (((rand() % 60) / 1000) - 0.3) * grid_h[1],
+                            0);
+            Ray r(eye, c.get_top_left() + grid_w/2 + grid_h/2 + jitter
+                    + grid_w*i + grid_h*j);
+            total_c += scene.handle_ray(r);
+        }
+    }
+    total_c /= gridx * gridy;
+    if (total_c.r > 1.0) total_c.r = 1.0;
+    if (total_c.g > 1.0) total_c.g = 1.0;
+    if (total_c.b > 1.0) total_c.b = 1.0;
+    color_buf[x][y] = total_c;
 }
 
 void RayTracer::save() {

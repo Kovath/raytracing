@@ -18,13 +18,8 @@ Color calc_diffuse(Primitive *obj, Light *light, Vector3f light_v, Vector3f norm
 
 Color calc_specular(Primitive *obj, Light *light, Vector3f light_v, Vector3f normal_v, Vector3f viewer_v) {
     Vector3f reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
-    float tough = fmax(reflected_v.dot(viewer_v), 0);
-    tough = pow(tough, obj->get_specular_power());
-    Color final_c = obj->get_specular_c() * light->get_intensity() * tough;
-    if (tough > 0.05)
-        cout << "final specular: " << final_c << endl;
-
-    return final_c;
+    float right_side = pow(fmax(reflected_v.dot(viewer_v), 0), obj->get_specular_power());
+    return obj->get_specular_c() * light->get_intensity() * right_side;
 }
 
 Color Scene::handle_ray(Ray r) {
