@@ -9,11 +9,11 @@
 #include "color.h"
 #include "scene.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "rectviewport.h"
 #include "pointlight.h"
 
 typedef Vector3f Eye;
-
 typedef Point3f Eye;
 
 // RAYTRACER
@@ -26,30 +26,19 @@ public:
 	void save();
 
 private:
-	// Image drwaing configuration
+	// Configuration
+	bool antialiasing;
+	unsigned int thread_count;
+	String filename;
+	
+	// Internal members
     Eye eye;
     RectViewport viewport;
     Color** color_buf;
     Scene scene;
 
-	// output file string
-	const char* filename;
-
 	friend void thread_trace(void*);
     void trace(Cell c, int x, int y);
-};
-
-
-
-
-//
-// FOR THREADING!
-//
-void thread_trace(void* data);
-struct ThreadData {
-	int thread_count;
-	int thread_number;
-	RayTracer* tracer;
 };
 
 #endif
