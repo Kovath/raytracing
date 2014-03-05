@@ -35,7 +35,21 @@ private:
 	// output file string
 	const char* filename;
 
+	friend void thread_trace(void*);
     void trace(Cell c, int x, int y);
+};
+
+
+
+
+//
+// FOR THREADING!
+//
+void thread_trace(void* data);
+struct ThreadData {
+	int thread_count;
+	int thread_number;
+	RayTracer* tracer;
 };
 
 #endif

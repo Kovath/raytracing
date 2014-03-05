@@ -1,5 +1,10 @@
 #include "raytracer.h"
+
+#include "tinythread.h"
 #include "lodepng.h"
+
+using namespace tthread;
+typedef thread Thread;
 
 RayTracer::RayTracer(vector<Setting>& settings) {
     eye = Point3f(0, 0, 100);
@@ -28,15 +33,51 @@ RayTracer::~RayTracer() {
 }
 
 void RayTracer::render() {
-    Vector2i resolution = viewport.get_resolution();
+	int thread_count = 64;
+	
+	list<Thread*> threads;
+	ThreadData* data = new ThreadData[thread_count];
+	
+	for(int i = 0; i < thread_count; i++) {
+		data[i].thread_count = thread_count;
+		data[i].thread_number = i;
+		data[i].tracer = this;
+	
+		Thread* thread = new Thread(thread_trace, (void*)(&(data[i])));
+		threads.push_back(thread);
+	}
+	for(list<thread*>::iterator i = threads.begin(); i != threads.end(); i++) {
+		Thread* thread = *i;
+		thread->join();
+		delete thread;
+	}
+	delete[] data;
+}
+
+void thread_trace(void* d) {
+	// Retrieving data from ThreadData
+	ThreadData* data = (ThreadData*)d;
+	RayTracer* tracer = data->tracer;
+	int thread_count = data->thread_count;
+	int thread_number = data->thread_number;
+	
+	// pulling extra info
+	Vector2i resolution = tracer->viewport.get_resolution();
     int width = resolution[0];
     int height = resolution[1];
+	
+	int workload = (height / thread_count);
+	int start_row = thread_number * workload;
+	int end_row = (thread_number + 1) * workload;
 
-    // fill out the color array
-    int i, j;
-    for (j=0; j<height; j++) {
-        for (i=0; i<width; i++) {
-            trace(viewport.get_cell(i, j), i, j);
+	if((thread_number + 1) == thread_count) {
+		end_row += ((thread_number + 1) == thread_count) ? height % thread_count : 0;
+	}
+	
+	// fill out the color array
+    for (int j = start_row; j < end_row; j++) {
+        for (int i = 0; i < width; i ++) {
+            tracer->trace(tracer->viewport.get_cell(i, j), i, j);
         }
     }
 }
@@ -59,9 +100,9 @@ void RayTracer::save() {
 	unsigned char* image = new unsigned char[width * height * 3];
 	for(unsigned int x = 0; x < width; x++) {
 		for(unsigned int y = 0; y < height; y++) {
-			image[y * width * 3 + x * 3 + 0] = ((int)(color_buf[x][y].r*255)) & 0xff;
-			image[y * width * 3 + x * 3 + 1] = ((int)(color_buf[x][y].g*255)) & 0xff;
-			image[y * width * 3 + x * 3 + 2] = ((int)(color_buf[x][y].b*255)) & 0xff;
+			image[y * width * 3 + x * 3 + 0] = (int)(color_buf[x][y].r * 255.0);
+			image[y * width * 3 + x * 3 + 1] = (int)(color_buf[x][y].g * 255.0); 
+			image[y * width * 3 + x * 3 + 2] = (int)(color_buf[x][y].b * 255.0);
 		}
 	}
 
@@ -70,3 +111,4 @@ void RayTracer::save() {
 	lodepng_encode24_file(filename, image, width, height);
 	delete[] image;
 }
+

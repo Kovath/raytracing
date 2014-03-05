@@ -27,5 +27,8 @@ Session.vim
 .netrwhist
 *~
 
+# ignore images
+**.png
+
 # OSX .gitignore
 **.DS_Store
