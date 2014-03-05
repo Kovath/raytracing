@@ -15,7 +15,12 @@ class Color {
 
         friend Color operator+(const Color &a, const Color &b);
         friend Color operator/(const Color &a, float n);
+        friend Color operator*(const Color &a, const Color &b);
+        friend Color operator*(const Color &a, float n);
+        friend Color operator*(float n, const Color &a);
         friend ostream& operator<<(ostream& o, const Color &c);
+
+        Color max(Color a, float n);
 };
 
 #endif // COLOR_H

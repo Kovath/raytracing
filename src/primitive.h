@@ -3,23 +3,25 @@
 
 #include "include.h"
 #include "ray.h"
+#include "color.h"
 
 // base class for anything being rendered on the scene
 class Primitive {
     public:
-        virtual bool did_ray_hit(Ray r, float* intersection_t, float epsilon=0) { printf("primitive did_ray_hit!!!!\n"); return false; };
+        virtual bool did_ray_hit(Ray r, float* intersection_t, float epsilon=0) { printf("primitive did_ray_hit!!!!\n"); return false; }
+        virtual Vector3f get_normal(Point3f point) { printf("primitive get_normal??\n"); return Vector3f(0, 0, 0); }
 
 		// getters
-		float get_ambient_c();
-		float get_diffuse_c();
-		float get_specular_c();
+		Color get_ambient_c();
+		Color get_diffuse_c();
+		Color get_specular_c();
 		unsigned int get_specular_power();
 
         // setters
-        void set_shading_c(float ambient, float diffuse, float specular, unsigned int specular_pow);
-		void set_ambient_c(float ambient);
-		void set_diffuse_c(float diffuse);
-		void set_specular_c(float specular);
+        void set_shading_c(Color ambient, Color diffuse, Color specular, unsigned int specular_pow);
+		void set_ambient_c(Color ambient);
+		void set_diffuse_c(Color diffuse);
+		void set_specular_c(Color specular);
 		void set_specular_power(float specular_power);
 
         // cout <<
@@ -27,7 +29,7 @@ class Primitive {
 
 	private:
 		// terms for determining the reflection
-        float ambient_c, diffuse_c, specular_c;
+        Color ambient_c, diffuse_c, specular_c;
         unsigned int specular_power;
 };
 

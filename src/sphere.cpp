@@ -53,6 +53,12 @@ bool Sphere::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */
     }
 }
 
+Vector3f Sphere::get_normal(Point3f point) {
+    Vector3f normal_v = point - center;
+    normal_v.normalize();
+    return normal_v;
+}
+
 // setters
 void Sphere::set_center(Point3f center) {
 	this->center = center;

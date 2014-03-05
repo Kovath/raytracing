@@ -15,6 +15,7 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     for(int i=0; i<resolution[0]; i++)
         color_buf[i] = new Color[resolution[1]];
     Sphere *s = new Sphere(Point3f(0,0,0), 50);
+    s->set_shading_c(Color(0.5, 0.1, 0), Color(0.5, 0.2, 0), Color(0.8, 0.8, 0.8), 80);
     scene.add_object(s);
     PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1,1,1));
     scene.add_light(pl);
@@ -45,6 +46,9 @@ void RayTracer::trace(Cell c, int x, int y) {
     Ray r(eye, c.get_center());
 
     color_buf[x][y] = scene.handle_ray(r);
+    if (color_buf[x][y].r > 1.0) color_buf[x][y].r = 1.0;
+    if (color_buf[x][y].g > 1.0) color_buf[x][y].g = 1.0;
+    if (color_buf[x][y].b > 1.0) color_buf[x][y].b = 1.0;
 }
 
 void RayTracer::save() {

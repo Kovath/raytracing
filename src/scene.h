@@ -5,6 +5,7 @@
 #include "primitive.h"
 #include "light.h"
 #include "color.h"
+#include "point.h"
 
 class Scene {
     public:
@@ -20,7 +21,8 @@ class Scene {
         Color handle_ray(Ray r);
         // returns true or false based on whether the ray hits an object
         // and sets the time t the ray hits an object in the scene
-        bool did_collide(Ray r, float *t);
+        // sets the primtive being pointed to if ray hits an object
+        bool did_collide(Ray r, float *t, Primitive **obj);
 
     private:
         vector<Primitive*> objects;
