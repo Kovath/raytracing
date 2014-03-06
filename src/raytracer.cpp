@@ -19,9 +19,9 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
 	// load settings
 	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
-
+		
 	}
-	antialiasing = true;
+	antialiasing = false;
 	thread_count = 8;
 
 
@@ -106,8 +106,7 @@ void RayTracer::render() {
 		data[i].thread_number = i;
 		data[i].tracer = this;
 
-		Thread* thread = new Thread(thread_trace, (void*)(&(data[i])));
-		threads.push_back(thread);
+		threads.push_back(new Thread(thread_trace, (void*)(&(data[i]))));
 	}
 
 	for(list<thread*>::iterator i = threads.begin(); i != threads.end(); ++i) {

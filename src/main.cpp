@@ -1,7 +1,6 @@
 #include "timer.h"
 #include "raytracer_input.h"
 #include "raytracer.h"
-#include <unistd.h>
 
 int main(int argc, char** argv) {
 	Timer program_timer;

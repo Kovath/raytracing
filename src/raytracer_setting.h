@@ -4,9 +4,12 @@
 
 class SettingType {
 public:
+	static int settingTypeCount;
+	static SettingType settingTypes[];
 	static const SettingType NO_TYPE; // "", "", 0
 	static const SettingType POINT_LIGHT; // "pl", "point-light", 6
 	static const SettingType DIRECTION_LIGHT; // "dl", "direction-light", 6
+	static const SettingType THREADING; // "t", "threading", 1
 	
 	bool   matches(String option) const;
 	
