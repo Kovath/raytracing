@@ -17,12 +17,20 @@ class Primitive {
 		Color get_specular_c();
 		unsigned int get_specular_power();
 
+        float get_reflection_c();
+        float get_refraction_c();
+
         // setters
         void set_shading_c(Color ambient, Color diffuse, Color specular, unsigned int specular_pow);
 		void set_ambient_c(Color ambient);
 		void set_diffuse_c(Color diffuse);
 		void set_specular_c(Color specular);
 		void set_specular_power(float specular_power);
+
+        void set_reflection_c(float new_reflection);
+        void set_refraction_c(float new_refraction);
+        // set the reflection and refraction both
+        void set_rnr(float new_reflection, float new_refraction);
 
         // cout <<
         friend ostream& operator<< (ostream& ostream, const Primitive p) { return ostream << "Primitive" << endl; };
@@ -31,6 +39,10 @@ class Primitive {
 		// terms for determining the reflection
         Color ambient_c, diffuse_c, specular_c;
         unsigned int specular_power;
+
+        // terms for determining reflected strength and refraction strength
+        // should be from 0 - 1
+        float reflection_c, refraction_c;
 };
 
 #endif // PRIMITIVE_H

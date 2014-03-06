@@ -18,7 +18,8 @@ class Scene {
         void add_light(Light *l);
 
         // returns a color after bouncing the ray through the scene
-        Color handle_ray(Ray r);
+        // calculates the reflection recursively (limit times max)
+        Color handle_ray(Ray r, int limit=1);
         // returns true or false based on whether the ray hits an object
         // and sets the time t the ray hits an object in the scene
         // sets the primtive being pointed to if ray hits an object

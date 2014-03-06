@@ -16,21 +16,32 @@ Color calc_diffuse(Primitive *obj, Light *light, Vector3f light_v, Vector3f norm
     return color;
 }
 
-Color calc_specular(Primitive *obj, Light *light, Vector3f light_v, Vector3f normal_v, Vector3f viewer_v) {
-    Vector3f reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
+Color calc_specular(Primitive *obj, Light *light, Vector3f reflected_v, Vector3f viewer_v) {
     float right_side = pow(fmax(reflected_v.dot(viewer_v), 0), obj->get_specular_power());
     return obj->get_specular_c() * light->get_intensity() * right_side;
 }
 
-Color Scene::handle_ray(Ray r) {
+Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
+    // base case for the recursive function
+    if (limit <= 0) return Color(0, 0, 0);
+
     float temp = 0;
     float *t = &temp;
+    int hit = 0;
     Color ret(0, 0, 0);
 
-    int hit = 0;
     Primitive *obj = NULL;
+    // if we hit an object
     if (did_collide(r, t, &obj)) {
         Point3f collision_point = r.point_at_time(*t);
+
+        // normal of the point hit and viewer vector won't change
+        Vector3f normal_v = obj->get_normal(collision_point);
+        Vector3f viewer_v = (r.get_origin() - collision_point);
+        // calculate the reflected ray
+        Ray reflected(collision_point, collision_point + -viewer_v + 2*(normal_v.dot(viewer_v))*normal_v);
+        viewer_v.normalize();
+
         // go through all the lights checking if a ray from that point would hit the light
         for (unsigned int i=0; i<lights.size(); i++) {
             int num = 0;
@@ -46,23 +57,26 @@ Color Scene::handle_ray(Ray r) {
                     hit++;
                     Vector3f light_v = (pos_array[j] - collision_point);
                     light_v.normalize();
-                    Vector3f normal_v = obj->get_normal(collision_point);
-                    Vector3f viewer_v = (r.get_origin() - collision_point);
-                    viewer_v.normalize();
+                    Vector3f reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
+                    reflected_v.normalize();
                     // DIFFUSE AND SPECULAR TERMS HERE
                     add = add + calc_diffuse(obj, lights[i], light_v, normal_v);
-                    add = add + calc_specular(obj, lights[i], light_v, normal_v, viewer_v);
+                    add = add + calc_specular(obj, lights[i], reflected_v, viewer_v);
                 }
             }
             // average the color added by the number of points checked
-            add = add / *n;
+            add /= *n;
 
             // AMBIENT TERM
-            add = add + obj->get_ambient_c();
+            add += lights[i]->get_intensity()*obj->get_ambient_c();
 
             // add color of the light to the color returned
-            ret = ret + add;
+            ret += add;
         }
+
+        // recursively go through the reflected ray to add a color to the object
+        // with strength reflection_c for the object
+        ret += obj->get_reflection_c() * handle_ray(reflected, limit-1);
     }
 
     return ret;
@@ -70,12 +84,14 @@ Color Scene::handle_ray(Ray r) {
 
 bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
     float min_time = -1;
+    // the amount of leeway the ray gets (prevents self-shading)
+    float epsilon = 0.05;
 
     float temp = 0;
     float *tmp = &temp;
     Primitive *tmpy;
     for (unsigned int i=0; i<objects.size(); i++) {
-        if (objects[i]->did_ray_hit(r, tmp, 0.05)) {
+        if (objects[i]->did_ray_hit(r, tmp, epsilon)) {
             if (*tmp < min_time || min_time == -1) {
                 min_time = *tmp;
                 tmpy = objects[i];

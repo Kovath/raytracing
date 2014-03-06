@@ -16,6 +16,13 @@ unsigned int Primitive::get_specular_power() {
 	return specular_power;
 }
 
+float Primitive::get_reflection_c() {
+    return reflection_c;
+}
+
+float Primitive::get_refraction_c() {
+    return refraction_c;
+}
 
 
 void Primitive::set_ambient_c(Color ambient) {
@@ -32,6 +39,20 @@ void Primitive::set_specular_c(Color specular) {
 
 void Primitive::set_specular_power(float specular_pow) {
 	specular_power = specular_pow;
+}
+
+void Primitive::set_reflection_c(float new_reflection) {
+    reflection_c = new_reflection;
+}
+
+void Primitive::set_refraction_c(float new_refraction) {
+    refraction_c = new_refraction;
+}
+
+// set the reflection and refraction both
+void Primitive::set_rnr(float new_reflection, float new_refraction) {
+    reflection_c = new_reflection;
+    refraction_c = new_refraction;
 }
 
 void Primitive::set_shading_c(Color ambient, Color diffuse, Color specular, unsigned int specular_pow) {
