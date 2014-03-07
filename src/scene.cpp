@@ -62,7 +62,7 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
             for (int j=0; j<*n; j++) {
                 // jitter the jitter
                 if (jit) {
-                    float scale = 5;
+                    float scale = 10;
                     jitter = Vector3f((((rand() % 100) / 100.0) - 0.5) * scale,
                             (((rand() % 100) / 100.0) - 0.5) * scale,
                             (((rand() % 100) / 100.0) - 0.5) * scale);

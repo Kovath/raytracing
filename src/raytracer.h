@@ -13,9 +13,7 @@
 #include "rectviewport.h"
 #include "pointlight.h"
 #include "arealight.h"
-
-typedef Vector3f Eye;
-typedef Point3f Eye;
+#include "rectcamera.h"
 
 // RAYTRACER
 class RayTracer {
@@ -31,15 +29,16 @@ private:
 	bool antialiasing;
 	unsigned int thread_count;
 	String filename;
+    int _aa_sizex, _aa_sizey;
 
 	// Internal members
-    Eye eye;
-    RectViewport viewport;
+    RectCamera *camera;
     Color** color_buf;
     Scene scene;
 
 	friend void thread_trace(void*);
     void trace(Cell c, int x, int y);
+
 };
 
 #endif

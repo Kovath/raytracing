@@ -8,7 +8,7 @@
 class Viewport {
     public:
         // returns a cell given pixel indices
-        Cell virtual get_cell(int x, int y) =0;
+        virtual Cell get_cell(int x, int y) { return Cell(); };
 
         // setter functions
         void set_resolution(Vector2i new_resolution);

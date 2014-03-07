@@ -12,7 +12,7 @@ AreaLight::~AreaLight() {
     delete[] positions;
 }
 
-void set_sample_size(int x, int y) {
+void AreaLight::set_sample_size(int x, int y) {
     _samplex = x;
     _sampley = y;
 }
