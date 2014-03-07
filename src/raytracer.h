@@ -12,6 +12,7 @@
 #include "triangle.h"
 #include "rectviewport.h"
 #include "pointlight.h"
+#include "arealight.h"
 
 typedef Vector3f Eye;
 typedef Point3f Eye;
@@ -30,7 +31,7 @@ private:
 	bool antialiasing;
 	unsigned int thread_count;
 	String filename;
-	
+
 	// Internal members
     Eye eye;
     RectViewport viewport;

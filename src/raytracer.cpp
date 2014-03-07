@@ -21,7 +21,7 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
 		
 	}
-	antialiasing = false;
+	antialiasing = true;
 	thread_count = 8;
 
 
@@ -68,13 +68,12 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     scene.add_object(t);
     */
 
-    /*
     // create a back wall at z
     int z = -50;
     float size = 200;
 
-    Color amb(0.02, 0.02, 0.15);
-    Color dif(0.2, 0.05, 0.1);
+    Color amb(0.12, 0.12, 0.25);
+    Color dif(0.3, 0.05, 0.2);
     Color spec(0.05, 0.05, 0.05);
     int power = 80;
 
@@ -85,11 +84,17 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     Primitive *right_t = new Triangle(Vector3f(-size, size, z), Vector3f(size, -size, z), Vector3f(size, size, z));
     right_t->set_shading_c(amb, dif, spec, power);
     scene.add_object(right_t);
-    */
 
 	// creating lights
+    /*
 	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1,1,1));
     scene.add_light(pl);
+    */
+
+    AreaLight *al = new AreaLight(Quad(Point3f(-100, 100, 100), Vector3f(40, 0, 0), Vector3f(0, -40, 0)), Color(1,1,1));
+    // 25 points on the area light to check
+    al->set_sample_size(5, 5);
+    scene.add_light(al);
 }
 
 RayTracer::~RayTracer() {

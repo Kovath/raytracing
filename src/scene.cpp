@@ -49,11 +49,27 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
             // get positions to interpolate the light from
             Point3f *pos_array = lights[i]->get_positions(n);
 
+            Vector3f jitter(0,0,0);
+            bool jit = false;
+            if (*n > 1) {
+                srand(collision_point[0] + 12345*collision_point[1] + 231*collision_point[2]);
+                jit = true;
+            }
+
+
+
             Color add(0, 0, 0);
             for (int j=0; j<*n; j++) {
+                // jitter the jitter
+                if (jit) {
+                    float scale = 12;
+                    jitter = Vector3f((((rand() % 100) / 100.0) - 0.5) * scale,
+                            (((rand() % 100) / 100.0) - 0.5) * scale,
+                            (((rand() % 100) / 100.0) - 0.5) * scale);
+                }
                 Primitive *e = NULL;
                 // if the ray from the point on the object hits this light
-                if (!did_collide(Ray(collision_point, pos_array[j]), t, &e)) {
+                if (!did_collide(Ray(collision_point, pos_array[j] + jitter), t, &e)) {
                     hit++;
                     Vector3f light_v = (pos_array[j] - collision_point);
                     light_v.normalize();
