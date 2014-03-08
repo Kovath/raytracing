@@ -2,6 +2,13 @@
 #include "tinythread.h"
 #include "lodepng.h"
 
+#include "point.h"
+#include "rectcamera.h"
+#include "sphere.h"
+#include "triangle.h"
+#include "pointlight.h"
+#include "arealight.h"
+
 // THREADING
 using namespace tthread;
 typedef thread Thread;
@@ -12,51 +19,55 @@ struct ThreadData {
 };
 
 RayTracer::RayTracer(vector<Setting>& settings) {
-	// default configuration
+	//// default configuration
 	antialiasing = false;
-	thread_count = 4;
+    _aa_sizex = 1;
+    _aa_sizey = 1;
+	thread_count = 8;
 	filename = "img/0.png";
 
 	// load settings
 	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
 		
 	}
-	//antialiasing = true;
-	thread_count = 1;
+    antialiasing = false;
+	thread_count = 8;
+	//_aa_sizex = 5;
+	//_aa_sizey = 5;
+		
+	// camera location
+    Point3f eye(0, -200, 25);
+    // camera direction
+    Vector3f direction(0, 20, 0);
+    // camera orientation
+    Vector3f up(0, 0, 20);
+    camera = new RectCamera(eye, direction, up);
+    // set the resolution first
+    camera->set_resolution(Vector2i(1000, 1000));
+    // set x and y field of views to be 45 degrees
+    camera->set_fov(45, 45);
 
-
-
-	// generate internal members
-    eye = Point3f(0, 0, 125);
-
-    // create a rectangle viewport on the xy plane at z=50
-    Quad port(Point3f(-50, 50, 75), Vector3f(100, 0, 0), Vector3f(0, -100, 0));
-    Vector2i resolution(25, 25);
-    viewport = RectViewport(port, resolution);
-
-	this->color_buf = new Color*[resolution[0]];
-    for(int i=0; i<resolution[0]; i++)
-		this->color_buf[i] = new Color[resolution[1]];
+	color_buf = new Color*[camera->get_resolution()[0]];
+    for(int i=0; i<camera->get_resolution()[0]; i++) {
+        color_buf[i] = new Color[camera->get_resolution()[1]];
+	}	
 		
 	// loading primitives
     // left sphere
-	Primitive *s = new Sphere(Point3f(-55,0,0), 25);
+	Primitive *s = new Sphere(Point3f(-55,-55,0), 25);
     s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 80);
-    // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.1, 0);
     scene.add_object(s);
 
     // middle sphere
 	s = new Sphere(Point3f(0,0,0), 25);
     s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 80);
-    // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.2, 0);
     scene.add_object(s);
 
     // right sphere
-	s = new Sphere(Point3f(55,0,0), 25);
+	s = new Sphere(Point3f(55,-55,0), 25);
     s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 80);
-    // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.3, 0);
     scene.add_object(s);
 
@@ -68,8 +79,8 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     */
 
     // create a back wall at z
-    int z = -50;
-    float size = 200;
+    int z = -25;
+    float size = 500;
 
     Color amb(0.12, 0.12, 0.25);
     Color dif(0.3, 0.05, 0.2);
@@ -85,19 +96,25 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     scene.add_object(right_t);
 
 	// creating lights
-    /*
-	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1,1,1));
+	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(0.5,0.5,0.5));
     scene.add_light(pl);
-    */
 
+    pl = new PointLight(Point3f(100, 100, 0), Color(0.4, 0.4, 0.4));
+    scene.add_light(pl);
+
+    pl = new PointLight(Point3f(25, -100, 0), Color(0.1, 0.1, 0.1));
+    scene.add_light(pl);
+
+    /*
     AreaLight *al = new AreaLight(Quad(Point3f(-100, 100, 100), Vector3f(40, 0, 0), Vector3f(0, -40, 0)), Color(1,1,1));
-    // 25 points on the area light to check
-    al->set_sample_size(5, 5);
+    // x*y points on the area light to check
+    al->set_sample_size(4, 4);
     scene.add_light(al);
+    */
 }
 
 RayTracer::~RayTracer() {
-	for (int i=0; i<viewport.get_resolution()[0]; i++)
+	for (int i=0; i<camera->get_resolution()[0]; i++)
         delete[] color_buf[i];
     delete[] color_buf;
 }
@@ -129,7 +146,7 @@ void thread_trace(void* d) {
 	int thread_number = ((ThreadData*)d)->thread_number;
 
 	// pulling extra info
-	Vector2i resolution = tracer->viewport.get_resolution();
+	Vector2i resolution = tracer->camera->get_resolution();
     int width = resolution[0];
     int height = resolution[1];
 
@@ -141,65 +158,49 @@ void thread_trace(void* d) {
 		end_row += height % thread_count;
 	}
 	
-	cout << "rows: " << start_row << " " << end_row << endl;
-	
 	// fill out the color array
-    for (int j = start_row; j < end_row; j++) {
-        for (int i = 0; i < width; i ++) {
-			cout << "start tracing" << endl;
-			tracer->viewport.get_cell(i, j);
-			cout << "hi" << endl;
-            tracer->trace(tracer->viewport.get_cell(i, j), i, j);
-			cout << "end tracing" << endl;
-		}
+	for (int i = 0; i < width; i ++) {
+		for (int j = start_row; j < end_row; j++) {
+            tracer->trace(tracer->camera->get_cell(j, i), j, i);
+        }
     }
 }
 
 void RayTracer::trace(Cell c, int x, int y) {
     Color total_c(0,0,0);
 	
-	cout << "hi!" << endl;
-    if (antialiasing) {
-        // create jittered ray grid with size
-        int gridx = 5;
-        int gridy = 5;
+	// create jittered ray grid with size
+	int gridx = _aa_sizex;
+	int gridy = _aa_sizey;
 
-        Vector3f grid_w = c.get_width() / gridx;
-        Vector3f grid_h = c.get_height() / gridy;
+	Vector3f grid_w = c.get_width() / gridx;
+	Vector3f grid_h = c.get_height() / gridy;
 
-        for (int j=0; j<gridy; j++) {
-            for (int i=0; i<gridx; i++) {
-                // the seed must be the same for each ray x, y, i, j
-                srand(x*4321 + y*1234 + i*12 + j*21);
+	for (int j=0; j<gridy; j++) {
+		for (int i=0; i<gridx; i++) {
+			// the seed must be the same for each ray x, y, i, j
+			srand(x*4321 + y*1234 + i*12 + j*21);
 
-                // [-0.3 -- 0.3] * grid_w x value * grid_h y value
-                Vector3f jitter((((rand() % 60) / 1000) - 0.3) * grid_w[0],
-                                (((rand() % 60) / 1000) - 0.3) * grid_h[1],
-                                0);
-                Ray r(eye, c.get_top_left() + grid_w/2 + grid_h/2 + jitter
-                        + grid_w*i + grid_h*j);
-                total_c += scene.handle_ray(r, 3);
-            }
-        }
-        total_c /= gridx * gridy;
-    }
-    else {
-        Ray r(eye, c.get_center());
-        total_c = scene.handle_ray(r, 3);
-    }
-	
-	cout << "hi!~ " << x << " " << y << endl;
+			// [-0.3 -- 0.3] * grid_w x value * grid_h y value
+			Vector3f jitter((((rand() % 60) / 1000) - 0.3) * grid_w[0],
+							(((rand() % 60) / 1000) - 0.3) * grid_h[1],
+							0);
+			Ray r(camera->get_position(), c.get_top_left() + grid_w/2 + grid_h/2 + jitter
+					+ grid_w*i + grid_h*j);
+			total_c += scene.handle_ray(r, 2);
+		}
+	}
+	total_c /= gridx * gridy;
+
+    // make sure to ceil the floats
     if (total_c.r > 1.0) total_c.r = 1.0;
     if (total_c.g > 1.0) total_c.g = 1.0;
     if (total_c.b > 1.0) total_c.b = 1.0;
-    cout << color_buf[x][y] << endl;
-	cout << "~" << endl;
 	color_buf[x][y] = total_c;
-	cout << "iono" << endl;
 }
 
 void RayTracer::save() {
-	Vector2i resolution = viewport.get_resolution();
+	Vector2i resolution = camera->get_resolution();
 	int width = resolution[0];
 	int height = resolution[1];
 
@@ -212,7 +213,6 @@ void RayTracer::save() {
 		}
 	}
 
-	// DLETE
 	lodepng_encode24_file(filename.data(), image, width, height);
 	delete[] image;
 }

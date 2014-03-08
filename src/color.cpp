@@ -1,12 +1,7 @@
 #include "color.h"
 
-Color::Color() {
-
-}
-
-Color::Color(float r, float g, float b): r(r), g(g), b(b) {
-
-}
+Color::Color() {}
+Color::Color(float r, float g, float b): r(r), g(g), b(b) {}
 
 Color operator+(const Color &a, const Color &b) {
     return Color(a.r + b.r, a.g + b.g, a.b + b.b);

@@ -3,12 +3,10 @@
 #include "raytracer.h"
 
 int main(int argc, char** argv) {
-	Timer program_timer;
-	Timer task_timer;
-
+	Timer program_timer, task_timer;
 	program_timer.start();
 	
-	// parse command line inputs
+	// parse command line inputs and initialize
 	cout << "Parsing input: ";
 	task_timer.start();
 	

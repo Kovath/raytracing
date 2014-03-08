@@ -5,7 +5,7 @@
 #include "primitive.h"
 #include "point.h"
 
-class Triangle : public virtual Primitive {
+class Triangle : public Primitive {
     public:
         // constructors
         Triangle();

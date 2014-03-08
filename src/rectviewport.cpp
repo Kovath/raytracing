@@ -1,9 +1,6 @@
 #include "rectviewport.h"
 
-RectViewport::RectViewport() {
-
-}
-
+RectViewport::RectViewport() {}
 RectViewport::RectViewport(Quad port): port(port) {
 	recompute_cell_properties();
 }
@@ -13,22 +10,15 @@ RectViewport::RectViewport(Quad port, Vector2i new_resolution): port(port) {
 	recompute_cell_properties();
 }
 
-RectViewport::~RectViewport() {
-
-}
-
 
 
 
 // the origin (0, 0) is the top left of the quad
 Cell RectViewport::get_cell(int x, int y) {
-	cout << "a" << endl;
     Point3f top_left = port.get_top_left() + x*cell_width + y*cell_height;
-    cout << "b" << endl;
 	Cell c( top_left,
             cell_width,
             cell_height);
-	cout << "c" << endl;
     return c;
 }
 

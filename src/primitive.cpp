@@ -1,5 +1,17 @@
 #include "primitive.h"
 
+bool Primitive::did_ray_hit(Ray r, float* intersection_t, float epsilon) { 
+	printf("primitive did_ray_hit!!!!\n");
+	return false; 
+}
+
+Vector3f Primitive::get_normal(Point3f point) {
+	printf("primitive get_normal??\n");
+	return Vector3f(0, 0, 0); 
+}
+
+
+
 Color Primitive::get_ambient_c() {
 	return ambient_c;
 }
@@ -61,3 +73,7 @@ void Primitive::set_shading_c(Color ambient, Color diffuse, Color specular, unsi
 	specular_c = specular;
 	specular_power = specular_pow;
 }
+
+ostream& operator<< (ostream& ostream, const Primitive p) { 
+	return ostream << "Primitive" << endl;
+};

@@ -1,5 +1,9 @@
 #include "light.h"
 
+Point3f* Light::get_positions(int *num_ptr) { 
+	return NULL; 
+}
+
 Color Light::get_intensity() {
     return intensity;
 }

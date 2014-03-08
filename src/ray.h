@@ -7,11 +7,9 @@
 class Ray {
     public:
         // constructors
-        Ray() {}
+        Ray();
         // ray can be defined by the origin and a point at t = 1
-        Ray(Point3f origin, Point3f pointAtT1): origin(origin) {
-            point = pointAtT1 - origin;
-        }
+        Ray(Point3f origin, Point3f pointAtT1);
 
         Point3f point_at_time(float t);
 
