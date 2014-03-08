@@ -8,10 +8,8 @@ class Color {
         float r, g, b;
 
         // constructors
-        Color() {}
-        Color(float r, float g, float b): r(r), g(g), b(b) {}
-
-		char toRGB(bool big_endian = true);
+        Color();
+        Color(float r, float g, float b);
 
         friend Color operator+(const Color &a, const Color &b);
         Color operator+=(const Color &a);

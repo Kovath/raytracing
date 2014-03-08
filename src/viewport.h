@@ -7,8 +7,10 @@
 // base class for all sorts of viewports
 class Viewport {
     public:
+		virtual ~Viewport() = 0;
+	
         // returns a cell given pixel indices
-        Cell virtual get_cell(int x, int y) =0;
+        virtual Cell get_cell(int x, int y) = 0;
 
         // setter functions
         void set_resolution(Vector2i new_resolution);

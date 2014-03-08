@@ -21,8 +21,8 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
 		
 	}
-	antialiasing = true;
-	thread_count = 8;
+	//antialiasing = true;
+	thread_count = 1;
 
 
 
@@ -31,14 +31,13 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
     // create a rectangle viewport on the xy plane at z=50
     Quad port(Point3f(-50, 50, 75), Vector3f(100, 0, 0), Vector3f(0, -100, 0));
-    Vector2i resolution(1000, 1000);
+    Vector2i resolution(25, 25);
     viewport = RectViewport(port, resolution);
 
-	color_buf = new Color*[resolution[0]];
+	this->color_buf = new Color*[resolution[0]];
     for(int i=0; i<resolution[0]; i++)
-        color_buf[i] = new Color[resolution[1]];
-
-
+		this->color_buf[i] = new Color[resolution[1]];
+		
 	// loading primitives
     // left sphere
 	Primitive *s = new Sphere(Point3f(-55,0,0), 25);
@@ -98,9 +97,9 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 }
 
 RayTracer::~RayTracer() {
-    for (int i=0; i<viewport.get_resolution()[0]; i++)
-        delete (color_buf[i]);
-    delete (color_buf);
+	for (int i=0; i<viewport.get_resolution()[0]; i++)
+        delete[] color_buf[i];
+    delete[] color_buf;
 }
 
 void RayTracer::render() {
@@ -120,7 +119,7 @@ void RayTracer::render() {
 		delete thread;
 	}
 
-	delete[] data ;
+	delete[] data;
 }
 
 void thread_trace(void* d) {
@@ -137,22 +136,29 @@ void thread_trace(void* d) {
 	int workload = (height / thread_count);
 	int start_row = thread_number * workload;
 	int end_row = (thread_number + 1) * workload;
-
+	
 	if((thread_number + 1) == thread_count) {
 		end_row += height % thread_count;
 	}
-
+	
+	cout << "rows: " << start_row << " " << end_row << endl;
+	
 	// fill out the color array
     for (int j = start_row; j < end_row; j++) {
         for (int i = 0; i < width; i ++) {
+			cout << "start tracing" << endl;
+			tracer->viewport.get_cell(i, j);
+			cout << "hi" << endl;
             tracer->trace(tracer->viewport.get_cell(i, j), i, j);
-        }
+			cout << "end tracing" << endl;
+		}
     }
 }
 
 void RayTracer::trace(Cell c, int x, int y) {
     Color total_c(0,0,0);
-
+	
+	cout << "hi!" << endl;
     if (antialiasing) {
         // create jittered ray grid with size
         int gridx = 5;
@@ -181,10 +187,15 @@ void RayTracer::trace(Cell c, int x, int y) {
         Ray r(eye, c.get_center());
         total_c = scene.handle_ray(r, 3);
     }
+	
+	cout << "hi!~ " << x << " " << y << endl;
     if (total_c.r > 1.0) total_c.r = 1.0;
     if (total_c.g > 1.0) total_c.g = 1.0;
     if (total_c.b > 1.0) total_c.b = 1.0;
-    color_buf[x][y] = total_c;
+    cout << color_buf[x][y] << endl;
+	cout << "~" << endl;
+	color_buf[x][y] = total_c;
+	cout << "iono" << endl;
 }
 
 void RayTracer::save() {

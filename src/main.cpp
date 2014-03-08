@@ -13,6 +13,7 @@ int main(int argc, char** argv) {
 	task_timer.start();
 	
 	vector<Setting> settings = RTInputParser(argc, argv).get_settings();
+	RayTracer rayTracer(settings);
 	
 	task_timer.stop();
 	cout << task_timer.get_duration_s() << " s" << endl;
@@ -23,7 +24,6 @@ int main(int argc, char** argv) {
 	cout << "Raytracer Rendering: ";
 	task_timer.start();
 	
-	RayTracer rayTracer(settings);
     rayTracer.render();
 	
 	task_timer.stop();

@@ -7,7 +7,7 @@
 
 class Light {
     public:
-        // num_ptr is written with the number of elements in the array returned
+		// num_ptr is written with the number of elements in the array returned
         virtual Point3f* get_positions(int *num_ptr) { return NULL; };
 
         // setter functions

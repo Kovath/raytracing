@@ -11,6 +11,7 @@ class RectViewport : public Viewport {
         RectViewport();
         RectViewport(Quad port);
         RectViewport(Quad port, Vector2i new_resolution);
+		~RectViewport();
 
         // override pure virtual function
         Cell get_cell(int x, int y);

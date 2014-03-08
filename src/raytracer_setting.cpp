@@ -4,14 +4,14 @@ const SettingType SettingType::NO_TYPE("", "", 0);
 const SettingType SettingType::POINT_LIGHT("pl", "point-light", 6);
 const SettingType SettingType::DIRECTION_LIGHT("dl", "direction-light", 6);
 const SettingType SettingType::THREADING("t", "threading", 1);
-//const SettingType SettingType::
+const SettingType SettingType::OBJECT("obj", "object", 1);
 
-
-SettingType SettingType::settingTypes[] = {
-	SettingType::NO_TYPE,
-	SettingType::POINT_LIGHT,
-	SettingType::DIRECTION_LIGHT,
-	SettingType::THREADING
+const SettingType* SettingType::TYPES[] = {
+	&SettingType::NO_TYPE,
+	&SettingType::POINT_LIGHT,
+	&SettingType::DIRECTION_LIGHT,
+	&SettingType::THREADING,
+	&SettingType::OBJECT
 };
 
 
@@ -67,16 +67,10 @@ Setting::Setting(SettingType type) {
 }
 
 Setting::Setting(String option) {
-	for(int i = 0; i < 4; i++) {
-	
-	}
-
-	if(SettingType::POINT_LIGHT.matches(option)) {
-		type = SettingType::POINT_LIGHT;
-	} else if(SettingType::DIRECTION_LIGHT.matches(option)) {
-		type = SettingType::DIRECTION_LIGHT;
-	} else {
-		type = SettingType::NO_TYPE;
+	for(int i = 0; i < (int)(sizeof(SettingType::TYPES) / sizeof(SettingType)); i++) {
+		if(SettingType::TYPES[i]->matches(option)) {
+			type = *(SettingType::TYPES[i]);
+		}
 	}
 }
 

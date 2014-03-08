@@ -4,12 +4,18 @@
 
 class SettingType {
 public:
-	static int settingTypeCount;
-	static SettingType settingTypes[];
+	static const SettingType* TYPES[];
 	static const SettingType NO_TYPE; // "", "", 0
+	
+	// scene configuration
 	static const SettingType POINT_LIGHT; // "pl", "point-light", 6
 	static const SettingType DIRECTION_LIGHT; // "dl", "direction-light", 6
+	static const SettingType OBJECT; // "obj", "object", 1
+	
+	// render settings
 	static const SettingType THREADING; // "t", "threading", 1
+	static const SettingType ANTIALIASING; // "aa", "anti-aliasing", 1
+	
 	
 	bool   matches(String option) const;
 	
@@ -18,7 +24,7 @@ public:
 	String get_long_name() const;
 	String get_long_command() const;
 	int    get_argc() const;
-
+	
 	friend class Setting;
 	
 private:
