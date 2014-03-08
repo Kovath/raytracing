@@ -34,10 +34,10 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 
     // if the time the ray hits the plane is less than epsilon, the plane is behind the ray
     if (intersection_plane_t < epsilon) return false;
 
-    // calculate the point on the play that the ray hits
+    // calculate the point on the plane that the ray hits
     Q = ray_origin + intersection_plane_t*ray_point;
 
-    // to test if the point Q is inside the plane, we compare the normal of the plane
+    // to test if the point Q is inside the triangle, we compare the normal of the plane
     // with the cross product of each edge of the triangle
     r0 = (e0.cross(Q - p0)).dot(n);
     // if the result is negative, the point is outside the triangle (relies on the
