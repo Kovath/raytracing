@@ -6,7 +6,7 @@
 #include "cell.h"
 #include "color.h"
 #include "scene.h"
-#include "camera.h"
+#include "rectcamera.h"
 
 // RAYTRACER
 class RayTracer {
@@ -20,17 +20,23 @@ public:
 private:
 	// Configuration
 	bool antialiasing;
+    bool depth_of_field;
 	unsigned int thread_count;
 	String filename;
     int _aa_sizex, _aa_sizey;
 
 	// Internal members
-	Camera* camera;
+	RectCamera* camera;
     Color** color_buf;
     Scene scene;
 
 	friend void thread_trace(void*);
     void trace(Cell c, int x, int y);
+
+    // compute color for cell
+    Color aa_compute(Cell c, int x, int y);
+    Color dof_compute(Cell c, int x, int y);
+    Color compute(Cell c, int x, int y);
 
 };
 

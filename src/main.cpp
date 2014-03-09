@@ -1,11 +1,15 @@
 #include "timer.h"
 #include "raytracer_input.h"
 #include "raytracer.h"
+#include "object.h"
 
 int main(int argc, char** argv) {
+	Object obj("test.obj");
+
 	Timer program_timer, task_timer;
 	program_timer.start();
 	
+	/*
 	// parse command line inputs and initialize
 	cout << "Parsing input: ";
 	task_timer.start();
@@ -41,7 +45,7 @@ int main(int argc, char** argv) {
 	
 	program_timer.stop();
 	cout << endl << "Total Time: " << program_timer.get_duration_s() << " s" << endl;
-	
+	*/
 	return 0;
 }
 

@@ -22,11 +22,16 @@ class Camera {
         Vector2i get_resolution();
         float get_fov_x();
         float get_fov_y();
+        float get_focal_length();
+        int get_aperature_ray_count();
+        int get_aperature_size();
 
         // setter functions
         void set_resolution(Vector2i new_resolution);
         // field of view stored in angles (degrees)
         void set_fov(float x, float y);
+        // subclasses implement this
+        virtual void create_viewport() {};
 
         void set_position(Point3f pos);
         void set_viewport(Viewport view);
@@ -34,17 +39,21 @@ class Camera {
         void set_up(Vector3f new_up);
         void set_fov_x(float new_fov_x);
         void set_fov_y(float new_fov_y);
+        void set_focal_length(float new_focal);
+        void set_aperature_ray_count(int new_rays);
+        void set_aperature_size(int new_size);
 
     protected:
-        // subclasses implement this
-        virtual void create_viewport() {};
-
         Viewport *viewport;
         Point3f position;
         Vector3f direction, up;
         Vector2i resolution;
         // angle in degrees
         float fov_x, fov_y;
+
+        float focal_length;
+        int aperature_size, aperature_ray_count;
+
         bool _created;
 };
 

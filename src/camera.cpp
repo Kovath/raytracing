@@ -38,6 +38,18 @@ float Camera::get_fov_y() {
     return fov_y;
 }
 
+float Camera::get_focal_length() {
+    return focal_length;
+}
+
+int Camera::get_aperature_ray_count() {
+    return aperature_ray_count;
+}
+
+int Camera::get_aperature_size() {
+    return aperature_size;
+}
+
 // setter functions
 void Camera::set_fov(float x, float y) {
     fov_x = x;
@@ -72,6 +84,17 @@ void Camera::set_fov_x(float new_fov_x) {
 
 void Camera::set_fov_y(float new_fov_y) {
     fov_y = new_fov_y;
+}
+void Camera::set_focal_length(float new_focal) {
+    focal_length = new_focal;
+}
+
+void Camera::set_aperature_ray_count(int new_rays) {
+    aperature_ray_count = new_rays;
+}
+
+void Camera::set_aperature_size(int new_size) {
+    aperature_size = new_size;
 }
 
 Cell Camera::get_cell(int x, int y) {
