@@ -31,6 +31,11 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
     Color ret(0, 0, 0);
 
     Primitive *obj = NULL;
+    Light *lite = NULL;
+    // if we hit a light return that value and quit
+    if (did_collide_light(r, t, &lite)) {
+        return lite->get_intensity();
+    }
     // if we hit an object
     if (did_collide(r, t, &obj)) {
         Point3f collision_point = r.point_at_time(*t);
@@ -40,6 +45,8 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
         Vector3f viewer_v = (r.get_origin() - collision_point);
         // calculate the reflected ray
         Ray reflected(collision_point, collision_point + -viewer_v + 2*(normal_v.dot(viewer_v))*normal_v);
+        Vector3f reflected_v = -viewer_v + 2*(normal_v.dot(viewer_v))*normal_v;
+        reflected_v.normalize();
         viewer_v.normalize();
 
         // go through all the lights checking if a ray from that point would hit the light
@@ -56,8 +63,6 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
                 jit = true;
             }
 
-
-
             Color add(0, 0, 0);
             for (int j=0; j<*n; j++) {
                 // jitter the jitter
@@ -71,13 +76,14 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
                 // if the ray from the point on the object hits this light
                 if (!did_collide(Ray(collision_point, pos_array[j] + jitter), t, &e)) {
                     hit++;
-                    Vector3f light_v = (pos_array[j] - collision_point);
+                    Vector3f light_v = (pos_array[j] + jitter - collision_point);
                     light_v.normalize();
-                    Vector3f reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
-                    reflected_v.normalize();
+                    Vector3f light_reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
+                    light_reflected_v.normalize();
+
                     // DIFFUSE AND SPECULAR TERMS HERE
                     add = add + calc_diffuse(obj, lights[i], light_v, normal_v);
-                    add = add + calc_specular(obj, lights[i], reflected_v, viewer_v);
+                    add = add + calc_specular(obj, lights[i], light_reflected_v, viewer_v);
                 }
             }
             // average the color added by the number of points checked
@@ -96,6 +102,19 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
     }
 
     return ret;
+}
+
+bool Scene::did_collide_light(Ray r, float *t, Light **lite) {
+    float temp = 0;
+    float *tmp = &temp;
+    for (int i=0; i<lights.size(); i++) {
+        if (lights[i]->did_ray_hit(r, tmp)) {
+            *t = *tmp;
+            *lite = lights[i];
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Scene::did_collide(Ray r, float *t, Primitive **obj) {

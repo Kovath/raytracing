@@ -17,32 +17,32 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     depth_of_field = false;
 
     // camera location
-    Point3f eye(0, -200, 25);
+    Point3f eye(0, -120, 40);
     // camera direction
-    Vector3f direction(0, 20, 0);
+    Vector3f direction(0, 20, -10);
     // camera orientation
-    Vector3f up(0, 0, 20);
+    Vector3f up(0, 10, 20);
     camera = new RectCamera(eye, direction, up);
     // set the resolution first
     camera->set_resolution(Vector2i(1000, 1000));
     // set x and y field of views to be 45 degrees
-    camera->set_fov(45, 45);
+    camera->set_fov(40, 40);
     camera->create_viewport();
 
     // DEPTH OF FIELD SETUP
     // determines size of sampling for a single focal point
     // (determines how blurry out-of-focus-objects are)
-    camera->set_aperature_size(600);
+    camera->set_aperature_size(150);
     // focal length (determines the z-distance in the scene that will be in focus)
     // multiplied against the direction length to place the focus plane
-    camera->set_focal_length(7);
-    // number of rays send through the aperture
-    camera->set_aperature_ray_count(16);
+    camera->set_focal_length(3.2);
+    // number of rays send through the aperture (4 by 4 grid)
+    camera->set_aperature_ray_count(Vector2i(4, 4));
     camera->create_focal_plane();
 
     // anti-aliasing grid is 5x5
-    _aa_sizex = 5;
-    _aa_sizey = 5;
+    _aa_sizex = 4;
+    _aa_sizey = 4;
 	thread_count = 8;
 	filename = "img/0.png";
 
@@ -50,8 +50,8 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
 
 	}
-    antialiasing = false;
-    depth_of_field = true;
+    antialiasing = true;
+    depth_of_field = false;
 
 	color_buf = new Color*[camera->get_resolution()[0]];
     for(int i=0; i<camera->get_resolution()[0]; i++)
@@ -60,22 +60,22 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
 	// loading primitives
     // left sphere
-	Primitive *s = new Sphere(Point3f(-60,-50,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 80);
+	Primitive *s = new Sphere(Point3f(-50,50,0), 25);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 210);
     // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.1, 0);
     scene.add_object(s);
 
     // middle sphere
-	s = new Sphere(Point3f(0,50,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 80);
+	s = new Sphere(Point3f(0,-50,0), 25);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 210);
     // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.2, 0);
     scene.add_object(s);
 
     // right sphere
 	s = new Sphere(Point3f(50,0,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 80);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 210);
     // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.3, 0);
     scene.add_object(s);
@@ -98,13 +98,16 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
     Primitive *left_t = new Triangle(Vector3f(-size, size, z), Vector3f(-size, -size, z), Vector3f(size, -size, z));
     left_t->set_shading_c(amb, dif, spec, power);
+    left_t->set_rnr(0.1, 0);
     scene.add_object(left_t);
 
     Primitive *right_t = new Triangle(Vector3f(-size, size, z), Vector3f(size, -size, z), Vector3f(size, size, z));
     right_t->set_shading_c(amb, dif, spec, power);
+    right_t->set_rnr(0.1, 0);
     scene.add_object(right_t);
 
 	// creating lights
+    /*
 	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(0.7,0.7,0.7));
     scene.add_light(pl);
 
@@ -113,13 +116,17 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
     pl = new PointLight(Point3f(25, -100, 0), Color(0.3, 0.3, 0.3));
     scene.add_light(pl);
+    */
 
-    /*
     AreaLight *al = new AreaLight(Quad(Point3f(-100, 100, 100), Vector3f(40, 0, 0), Vector3f(0, -40, 0)), Color(1,1,1));
     // x*y points on the area light to check
-    al->set_sample_size(4, 4);
+    al->set_sample_size(3, 3);
     scene.add_light(al);
-    */
+
+    al = new AreaLight(Quad(Point3f(150, 20, 50), Vector3f(0, -40, 0), Vector3f(0, 0, -20)), Color(1,1,1));
+    // x*y points on the area light to check
+    al->set_sample_size(3, 3);
+    scene.add_light(al);
 }
 
 RayTracer::~RayTracer() {
@@ -183,18 +190,25 @@ Color RayTracer::dof_compute(Cell c, int x, int y) {
     // to find the focal_point (the point that the ray intersects on the focal plane)
     Point3f focal_point = camera->compute_focal_intersection(r);
 
-    Vector3f cell_w = c.get_width();
-    Vector3f cell_h = c.get_height();
-
     int aperature_size = camera->get_aperature_size();
-    for(int i=0; i<camera->get_aperature_ray_count(); i++) {
-        srand(x*54321 + y*123 + 5872*i);
-        Vector3f jitter_w = cell_w * aperature_size * (((rand() % 100) / 100.0) - 0.5);
-        Vector3f jitter_h = cell_h * aperature_size * (((rand() % 100) / 100.0) - 0.5);
-        Ray r(c.get_center() + jitter_w + jitter_h, focal_point);
-        total_c += scene.handle_ray(r, 2);
+    Vector2i ray_count = camera->get_aperature_ray_count();
+    int ray_w = ray_count[0];
+    int ray_h = ray_count[1];
+
+    // split the aperature into a grid with ray_count
+    Vector3f cell_w = c.get_width()*(float)aperature_size/(float)ray_w;
+    Vector3f cell_h = c.get_height()*(float)aperature_size/(float)ray_h;
+
+    for(int j=-ray_w/2; j<ray_w/2; j++) {
+        for(int i=-ray_h/2; i<ray_h/2; i++) {
+            srand(x*54321 + y*123 + 5872*i + 912*j);
+            Vector3f jitter_w = cell_w * (((rand() % 60) / 100.0) - 0.3);
+            Vector3f jitter_h = cell_h * (((rand() % 60) / 100.0) - 0.3);
+            Ray r(c.get_center() + cell_w*i + cell_h*j + jitter_w + jitter_h, focal_point);
+            total_c += scene.handle_ray(r, 2);
+        }
     }
-    total_c /= camera->get_aperature_ray_count();
+    total_c /= ray_h * ray_w;
 
     return total_c;
 }

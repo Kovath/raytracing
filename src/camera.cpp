@@ -33,7 +33,7 @@ float Camera::get_focal_length() {
     return focal_length;
 }
 
-int Camera::get_aperature_ray_count() {
+Vector2i Camera::get_aperature_ray_count() {
     return aperature_ray_count;
 }
 
@@ -45,7 +45,6 @@ int Camera::get_aperature_size() {
 void Camera::set_fov(float x, float y) {
     fov_x = x;
     fov_y = y;
-    create_viewport();
 }
 
 void Camera::set_position(Point3f pos) {
@@ -80,7 +79,7 @@ void Camera::set_focal_length(float new_focal) {
     focal_length = new_focal;
 }
 
-void Camera::set_aperature_ray_count(int new_rays) {
+void Camera::set_aperature_ray_count(Vector2i new_rays) {
     aperature_ray_count = new_rays;
 }
 

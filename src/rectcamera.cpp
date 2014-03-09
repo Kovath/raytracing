@@ -33,7 +33,7 @@ void RectCamera::create_focal_plane() {
 }
 
 Point3f RectCamera::compute_focal_intersection(Ray r) {
-    if (!_dof_created) return Point3f(0, 0, 0);
+    if (!_dof_created) create_focal_plane();
 
     Point3f ray_point = r.get_point();
     Point3f ray_origin = r.get_origin();
