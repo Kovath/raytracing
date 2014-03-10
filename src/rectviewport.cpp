@@ -24,8 +24,8 @@ Cell RectViewport::get_cell(int x, int y) {
 
 void RectViewport::recompute_cell_properties() {
     // compute the cell height and width
-    cell_width = port.get_width()/(get_resolution()[0]);
-    cell_height = port.get_height()/(get_resolution()[1]);
+    cell_width = port.get_width()/((float)get_resolution()[0]);
+    cell_height = port.get_height()/((float)get_resolution()[1]);
 
 }
 

@@ -7,6 +7,7 @@
 class PointLight : public Light {
     public:
         Point3f* get_positions(int *num_ptr);
+        bool did_ray_hit(Ray r, float *t);
 
         // constructors
         PointLight();

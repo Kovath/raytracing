@@ -3,7 +3,6 @@
 #include "include.h"
 
 #include "primitive.h"
-#include "triangle.h"
 
 class Object : public Primitive {
 public:

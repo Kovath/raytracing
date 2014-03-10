@@ -23,6 +23,7 @@ class Scene {
         // and sets the time t the ray hits an object in the scene
         // sets the primtive being pointed to if ray hits an object
         bool did_collide(Ray r, float *t, Primitive **obj);
+        bool did_collide_light(Ray r, float *t, Light **lite);
 
     private:
         vector<Primitive*> objects;

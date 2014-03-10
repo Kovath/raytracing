@@ -20,10 +20,10 @@ class Camera {
         Vector3f get_direction();
         Vector3f get_up();
         Vector2i get_resolution();
+        Vector2i get_aperature_ray_count();
         float get_fov_x();
         float get_fov_y();
         float get_focal_length();
-        int get_aperature_ray_count();
         int get_aperature_size();
 
         // setter functions
@@ -40,19 +40,19 @@ class Camera {
         void set_fov_x(float new_fov_x);
         void set_fov_y(float new_fov_y);
         void set_focal_length(float new_focal);
-        void set_aperature_ray_count(int new_rays);
+        void set_aperature_ray_count(Vector2i new_rays);
         void set_aperature_size(int new_size);
 
     protected:
         Viewport *viewport;
         Point3f position;
         Vector3f direction, up;
-        Vector2i resolution;
+        Vector2i resolution, aperature_ray_count;
         // angle in degrees
         float fov_x, fov_y;
 
         float focal_length;
-        int aperature_size, aperature_ray_count;
+        int aperature_size;
 
         bool _created;
 };

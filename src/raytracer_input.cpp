@@ -1,4 +1,5 @@
 #include "raytracer_input.h"
+#include <sstream>
 
 RTInputParser::RTInputParser(int argc, char* argv[]) {
 	for(int i = 0; i < argc; i++) {
@@ -12,6 +13,18 @@ RTInputParser::RTInputParser(int argc, char* argv[]) {
 		}
 		
 		settings.push_back(setting);
+	}
+}
+
+RTInputParser::RTInputParser(istream& in) {
+	String line;
+	String keyword;
+	
+	while(in.good()) {
+		getline(in, line);
+		
+		istringstream sin(line);
+		sin >> keyword;
 	}
 }
 	
