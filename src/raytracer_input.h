@@ -7,13 +7,12 @@
 
 class RTInputParser {
 public:
-	RTInputParser(int argc, char* argv[]);
 	RTInputParser(istream& in);
 	
-	vector<Setting> get_settings();
+	list<Setting> get_settings();
 	
 private:
-	vector<Setting> settings;
+	list<Setting> settings;
 };
 
 #endif

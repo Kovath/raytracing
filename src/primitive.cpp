@@ -49,7 +49,7 @@ void Primitive::set_specular_c(Color specular) {
 	specular_c = specular;
 }
 
-void Primitive::set_specular_power(float specular_pow) {
+void Primitive::set_specular_power(unsigned int specular_pow) {
 	specular_power = specular_pow;
 }
 

@@ -11,7 +11,7 @@
 // RAYTRACER
 class RayTracer {
 public:
-	RayTracer(vector<Setting>& settings);
+	RayTracer(list<Setting>& settings);
     ~RayTracer();
 
 	void render();

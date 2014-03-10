@@ -25,7 +25,7 @@ class Primitive {
 		void set_ambient_c(Color ambient);
 		void set_diffuse_c(Color diffuse);
 		void set_specular_c(Color specular);
-		void set_specular_power(float specular_power);
+		void set_specular_power(unsigned int specular_power);
 
         void set_reflection_c(float new_reflection);
         void set_refraction_c(float new_refraction);
