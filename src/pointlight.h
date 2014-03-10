@@ -10,8 +10,8 @@ class PointLight : public Light {
         bool did_ray_hit(Ray r, float *t);
 
         // constructors
-        PointLight() {}
-        PointLight(Point3f position, Color intensity): position(position) {set_intensity(intensity);}
+        PointLight();
+        PointLight(Point3f position, Color intensity);
 
         // setter functions
         void set_position(Point3f p);

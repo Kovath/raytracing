@@ -5,12 +5,11 @@
 #include "primitive.h"
 #include "light.h"
 #include "color.h"
-#include "point.h"
 
 class Scene {
     public:
         // constructors
-        Scene() {}
+        Scene();
 
         // adds an object to the object list
         void add_object(Primitive *p);

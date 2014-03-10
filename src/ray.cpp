@@ -1,5 +1,12 @@
 #include "ray.h"
 
+Ray::Ray() {}
+Ray::Ray(Point3f origin, Point3f pointAtT1): origin(origin) {
+	point = pointAtT1 - origin;
+}
+
+
+
 void Ray::set_origin(Point3f new_origin) {
     origin = new_origin;
 }

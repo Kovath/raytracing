@@ -1,5 +1,14 @@
 #include "camera.h"
 
+// constructors
+Camera::Camera() {
+	_created = false;
+}
+
+Camera::Camera(Point3f position, Vector3f direction, Vector3f up): position(position), direction(direction), up(up) {
+	_created = false;
+}
+
 // getter functions
 Point3f Camera::get_position() {
     return position;

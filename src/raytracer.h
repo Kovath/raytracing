@@ -3,23 +3,16 @@
 
 #include "include.h"
 #include "raytracer_setting.h"
-#include "viewport.h"
-#include "point.h"
 #include "cell.h"
 #include "color.h"
 #include "scene.h"
-#include "sphere.h"
-#include "triangle.h"
-#include "rectviewport.h"
-#include "pointlight.h"
-#include "arealight.h"
 #include "rectcamera.h"
 #include "transformation.h"
 
 // RAYTRACER
 class RayTracer {
 public:
-	RayTracer(vector<Setting>& settings);
+	RayTracer(list<Setting>& settings);
     ~RayTracer();
 
 	void render();
@@ -34,7 +27,7 @@ private:
     int _aa_sizex, _aa_sizey;
 
 	// Internal members
-    RectCamera *camera;
+	RectCamera* camera;
     Color** color_buf;
     Scene scene;
 

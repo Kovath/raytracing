@@ -11,8 +11,8 @@ class Camera {
         Cell get_cell(int x, int y);
 
         // constructors
-        Camera() {_created = false;}
-        Camera(Point3f position, Vector3f direction, Vector3f up): position(position), direction(direction), up(up) {_created = false;}
+        Camera();
+        Camera(Point3f position, Vector3f direction, Vector3f up);
 
         // getter functions
         Point3f get_position();

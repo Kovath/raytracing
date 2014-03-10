@@ -5,12 +5,12 @@
 #include "primitive.h"
 #include "point.h"
 
-class Triangle : public virtual Primitive {
+class Triangle : public Primitive {
     public:
         // constructors
         Triangle();
         // p0, p1, p2 should be in counter clockwise order
-        Triangle(Point3f p0, Vector3f p1, Vector3f p2);
+        Triangle(Point3f p0, Point3f p1, Point3f p2);
 
         // sets the intersection time to float pointer t if ray hits object
         bool did_ray_hit(Ray ray, float *intersection_t, float epsilon=0);

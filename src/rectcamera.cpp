@@ -6,7 +6,6 @@
 RectCamera::RectCamera() {
     _dof_created = false;
 }
-
 RectCamera::RectCamera(Point3f position, Vector3f direction, Vector3f up) {
     this->position = position;
     this->direction = direction;

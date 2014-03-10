@@ -2,6 +2,14 @@
 #include "tinythread.h"
 #include "lodepng.h"
 
+#include "point.h"
+#include "rectcamera.h"
+#include "sphere.h"
+#include "triangle.h"
+#include "object.h"
+#include "pointlight.h"
+#include "arealight.h"
+
 // THREADING
 using namespace tthread;
 typedef thread Thread;
@@ -11,54 +19,18 @@ struct ThreadData {
 	RayTracer* tracer;
 };
 
-RayTracer::RayTracer(vector<Setting>& settings) {
+RayTracer::RayTracer(list<Setting>& settings) {
 	//// default configuration
 	antialiasing = false;
-    depth_of_field = false;
-
-    // camera location
-    Point3f eye(0, -120, 20);
-    // camera direction
-    Vector3f direction(0, 20, 0);
-    // camera orientation
-    Vector3f up(0, 0, 20);
-    camera = new RectCamera(eye, direction, up);
-    // set the resolution first
-    camera->set_resolution(Vector2i(1000, 1000));
-    // set x and y field of views to be 45 degrees
-    camera->set_fov(60, 60);
-    camera->create_viewport();
-
-    // DEPTH OF FIELD SETUP
-    // determines size of sampling for a single focal point
-    // (determines how blurry out-of-focus-objects are)
-    camera->set_aperature_size(150);
-    // focal length (determines the z-distance in the scene that will be in focus)
-    // multiplied against the direction length to place the focus plane
-    camera->set_focal_length(3.2);
-    // number of rays send through the aperture (4 by 4 grid)
-    camera->set_aperature_ray_count(Vector2i(4, 4));
-    camera->create_focal_plane();
-
-    // anti-aliasing grid is 5x5
-    _aa_sizex = 4;
-    _aa_sizey = 4;
+    _aa_sizex = 3;
+    _aa_sizey = 3;
 	thread_count = 8;
 	filename = "img/0.png";
-
-	// load settings
-	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
-
-	}
     depth_of_field = false;
+	camera = new RectCamera();
 
-	color_buf = new Color*[camera->get_resolution()[0]];
-    for(int i=0; i<camera->get_resolution()[0]; i++)
-        color_buf[i] = new Color[camera->get_resolution()[1]];
-
-
+	/*
 	// loading primitives
-    /*
     // left sphere
 	Primitive *s = new Sphere(Point3f(-50,50,0), 25);
     s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
@@ -93,6 +65,7 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     scene.add_object(t);
     */
 
+    /*
     // right angle triangle for testing rotations
 	Primitive *t = new Triangle(Vector3f(0, 0, 0), Vector3f(80, 0, 0), Vector3f(0, 80, 0));
     t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.5, 0.1, 0.4), Color(0.8, 0.8, 0.8), 80);
@@ -124,13 +97,12 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
     pl = new PointLight(Point3f(100, 100, 100), Color(0.6, 0.6, 0.6));
     scene.add_light(pl);
+    */
 
     /*
     pl = new PointLight(Point3f(25, -100, 0), Color(0.3, 0.3, 0.3));
     scene.add_light(pl);
-    */
 
-    /*
     AreaLight *al = new AreaLight(Quad(Point3f(-100, 100, 100), Vector3f(40, 0, 0), Vector3f(0, -40, 0)), Color(1,1,1));
     // x*y points on the area light to check
     al->set_sample_size(3, 3);
@@ -140,13 +112,207 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     // x*y points on the area light to check
     al->set_sample_size(3, 3);
     scene.add_light(al);
-    */
+	*/
+
+
+    Primitive* current_obj = NULL;
+	for(list<Setting>::iterator it = settings.begin(); it != settings.end(); it++) {
+		SettingType type = (*it).get_type();
+		vector<String> args = (*it).get_arguments();
+
+		switch(type) {
+			// RENDER CONFIGURATIONS
+			case CONFIG_OUTPUT_FILE: {
+				filename = args[0];
+			} break;
+
+			case CONFIG_THREADED: {
+				thread_count = atoi(args[0].c_str());
+			} break;
+
+			case CONFIG_ANTIALIASING: {
+
+			} break;
+
+			case CONFIG_DEPTH_OF_FIELD: {
+
+			} break;
+
+
+
+			// CAMERA CONFIGURATIONS
+			case CAMERA_POSITION: {
+				float x = atof(args[0].c_str());
+				float y = atof(args[1].c_str());
+				float z = atof(args[2].c_str());
+				camera->set_position(Point3f(x, y, z));
+			} break;
+
+			case CAMERA_DIRECTION: {
+				float x = atof(args[0].c_str());
+				float y = atof(args[1].c_str());
+				float z = atof(args[2].c_str());
+				camera->set_direction(Vector3f(x, y, z));
+			} break;
+
+			case CAMERA_FOV: {
+				float x = atof(args[0].c_str());
+				float y = atof(args[1].c_str());
+				camera->set_fov(x, y);
+			} break;
+
+			case CAMERA_ORIENTATION: {
+				float x = atof(args[0].c_str());
+				float y = atof(args[1].c_str());
+				float z = atof(args[2].c_str());
+				camera->set_up(Vector3f(x, y, z));
+			} break;
+
+			case CAMERA_RESOLUTION: {
+				int w = atoi(args[0].c_str());
+				int h = atoi(args[1].c_str());
+				camera->set_resolution(Vector2i(w, h));
+			} break;
+
+
+
+			// LIGHT CONFIGURATION
+			case LIGHT_POINT: {
+				float x = atof(args[0].c_str()); float y = atof(args[1].c_str()); float z = atof(args[2].c_str());
+				float r = atof(args[3].c_str()); float g = atof(args[4].c_str()); float b = atof(args[5].c_str());
+
+				Light* light = new PointLight(Point3f(x, y, z), Color(r, g, b));
+				scene.add_light(light);
+			} break;
+
+			case LIGHT_AREA: {
+				float x1 = atof(args[0].c_str()); float y1 = atof(args[1].c_str()); float z1 = atof(args[2].c_str());
+				float x2 = atof(args[3].c_str()); float y2 = atof(args[4].c_str()); float z2 = atof(args[5].c_str());
+				float x3 = atof(args[6].c_str()); float y3 = atof(args[7].c_str()); float z3 = atof(args[8].c_str());
+				float r  = atof(args[9].c_str()); float g = atof(args[10].c_str()); float b  = atof(args[11].c_str());
+
+				Light* light = new AreaLight(Quad(Point3f(x1, y1, z1), Vector3f(x2, y2, z2), Vector3f(x3, y3, z3)), Color(r, g, b));
+				((AreaLight*)light)->set_sample_size(3, 3);
+				scene.add_light(light);
+			} break;
+
+			case LIGHT_DIRECTION: {
+
+			} break;
+
+
+
+			// OBJECT CONFIGURATION
+			case OBJECT_SPHERE: {
+				if(current_obj != NULL) scene.add_object(current_obj);
+				float x = atof(args[0].c_str());
+				float y = atof(args[1].c_str());
+				float z = atof(args[2].c_str());
+				float radius = atof(args[3].c_str());
+
+				current_obj = new Sphere(Point3f(x, y, z), radius);
+                current_obj->set_rnr(0.3, 0);
+			} break;
+
+			case OBJECT_TRIANGLE: {
+				if(current_obj != NULL) scene.add_object(current_obj);
+				float x1 = atof(args[0].c_str()); float y1 = atof(args[1].c_str()); float z1 = atof(args[2].c_str());
+				float x2 = atof(args[3].c_str()); float y2 = atof(args[4].c_str()); float z2 = atof(args[5].c_str());
+				float x3 = atof(args[6].c_str()); float y3 = atof(args[7].c_str()); float z3 = atof(args[8].c_str());
+
+				current_obj = new Triangle(Point3f(x1, y1, z1), Point3f(x2, y2, z2), Point3f(x3, y3, z3));
+                current_obj->set_rnr(0.1, 0);
+			} break;
+
+			case OBJECT_OBJECT: {
+				if(current_obj != NULL) scene.add_object(current_obj);
+				current_obj = new Object(args[0]);
+			} break;
+
+
+
+			// MATERIAL CONFIGURATION
+			case MATERIAL_AMBIENCE: {
+				float r = atof(args[0].c_str());
+				float g = atof(args[1].c_str());
+				float b = atof(args[2].c_str());
+
+				current_obj->set_ambient_c(Color(r, g, b));
+				break;
+			}
+
+			case MATERIAL_DIFFUSE: {
+				float r = atof(args[0].c_str());
+				float g = atof(args[1].c_str());
+				float b = atof(args[2].c_str());
+                cout << "diffuse : (" << r << ", " << g << ", " << b << ")" << endl;
+
+				current_obj->set_diffuse_c(Color(r, g, b));
+				break;
+			}
+
+			case MATERIAL_SPECULAR: {
+				float r = atof(args[0].c_str());
+				float g = atof(args[1].c_str());
+				float b = atof(args[2].c_str());
+
+				current_obj->set_specular_c(Color(r, g, b));
+				break;
+			}
+
+			case MATERIAL_SPECULAR_POWER: {
+				unsigned int power = atoi(args[0].c_str());
+
+				current_obj->set_specular_power(power);
+				break;
+			}
+
+
+
+			// TRANSFORMATIONS
+			case TRANSFORM_TRANSLATE: {
+				break;
+			}
+
+			case TRANSFORM_SCALE: {
+				break;
+			}
+
+			case TRANSFORM_ROTATE: {
+				break;
+			}
+
+			default: break;
+		}
+        // end switch
+	}
+    // flush current_obj pointer to scene if there is one
+    if (current_obj != NULL) {
+        scene.add_object(current_obj);
+    }
+
+	camera->create_viewport();
+	// DEPTH OF FIELD SETUP
+    // determines size of sampling for a single focal point
+    // (determines how blurry out-of-focus-objects are)
+    camera->set_aperature_size(150);
+    // focal length (determines the z-distance in the scene that will be in focus)
+    // multiplied against the direction length to place the focus plane
+    camera->set_focal_length(3.2);
+    // number of rays send through the aperture (4 by 4 grid)
+    camera->set_aperature_ray_count(Vector2i(4, 4));
+    camera->create_focal_plane();
+
+	color_buf = new Color*[camera->get_resolution()[0]];
+    for(int i=0; i<camera->get_resolution()[0]; i++) {
+        color_buf[i] = new Color[camera->get_resolution()[1]];
+	}
 }
 
 RayTracer::~RayTracer() {
-    for (int i=0; i<camera->get_resolution()[0]; i++)
-        delete (color_buf[i]);
-    delete (color_buf);
+	for (int i=0; i<camera->get_resolution()[0]; i++)
+        delete[] color_buf[i];
+    delete[] color_buf;
 }
 
 void RayTracer::render() {
@@ -157,8 +323,7 @@ void RayTracer::render() {
 		data[i].thread_number = i;
 		data[i].tracer = this;
 
-		Thread* thread = new Thread(thread_trace, (void*)(&(data[i])));
-		threads.push_back(thread);
+		threads.push_back(new Thread(thread_trace, (void*)(&(data[i]))));
 	}
 
 	for(list<thread*>::iterator i = threads.begin(); i != threads.end(); ++i) {
@@ -167,7 +332,7 @@ void RayTracer::render() {
 		delete thread;
 	}
 
-	delete[] data ;
+	delete[] data;
 }
 
 void thread_trace(void* d) {
@@ -190,9 +355,9 @@ void thread_trace(void* d) {
 	}
 
 	// fill out the color array
-    for (int j = start_row; j < end_row; j++) {
-        for (int i = 0; i < width; i ++) {
-            tracer->trace(tracer->camera->get_cell(i, j), i, j);
+	for (int i = 0; i < width; i ++) {
+		for (int j = start_row; j < end_row; j++) {
+            tracer->trace(tracer->camera->get_cell(j, i), j, i);
         }
     }
 }
@@ -274,28 +439,28 @@ void RayTracer::trace(Cell c, int x, int y) {
         }
     }
 
-    // make sure to ceil the floats
-    if (total_c.r > 1.0) total_c.r = 1.0;
-    if (total_c.g > 1.0) total_c.g = 1.0;
-    if (total_c.b > 1.0) total_c.b = 1.0;
+    if (total_c.r > 1) total_c.r = 1;
+    if (total_c.g > 1) total_c.g = 1;
+    if (total_c.b > 1) total_c.b = 1;
+
     color_buf[x][y] += total_c;
 }
 
 void RayTracer::save() {
 	Vector2i resolution = camera->get_resolution();
+	int rgb_size = 3;
 	int width = resolution[0];
 	int height = resolution[1];
 
-	unsigned char* image = new unsigned char[width * height * 3];
+	unsigned char* image = new unsigned char[width * height * rgb_size];
 	for(int x = 0; x < width; x++) {
 		for(int y = 0; y < height; y++) {
-			image[(y * width + x) * 3 + 0] = (int)(color_buf[x][y].r * 255.0);
-			image[(y * width + x) * 3 + 1] = (int)(color_buf[x][y].g * 255.0);
-			image[(y * width + x) * 3 + 2] = (int)(color_buf[x][y].b * 255.0);
+			image[(y * width + x) * rgb_size + 0] = (int)(color_buf[x][y].r * 255.0);
+			image[(y * width + x) * rgb_size + 1] = (int)(color_buf[x][y].g * 255.0);
+			image[(y * width + x) * rgb_size + 2] = (int)(color_buf[x][y].b * 255.0);
 		}
 	}
 
-	// DLETE
 	lodepng_encode24_file(filename.data(), image, width, height);
 	delete[] image;
 }

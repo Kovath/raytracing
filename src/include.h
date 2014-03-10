@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <math.h>
+#include <cmath>
 #include <Eigen/Dense>
 
 using namespace std;

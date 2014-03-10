@@ -1,4 +1,9 @@
 #include "scene.h"
+#include "point.h"
+
+Scene::Scene() {
+
+}
 
 void Scene::add_object(Primitive *p) {
     objects.push_back(p);
@@ -121,7 +126,7 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
 bool Scene::did_collide_light(Ray r, float *t, Light **lite) {
     float temp = 0;
     float *tmp = &temp;
-    for (int i=0; i<lights.size(); i++) {
+    for (unsigned int i=0; i<lights.size(); i++) {
         if (lights[i]->did_ray_hit(r, tmp)) {
             *t = *tmp;
             *lite = lights[i];
