@@ -5,7 +5,7 @@ thread 8
 cam_position 0 0 100
 cam_direction 0 0 -1
 cam_orientation 0 1 0.4
-cam_resolution 2000 2000
+cam_resolution 1000 1000
 cam_fov 45 45
 
 # objects
@@ -13,13 +13,15 @@ triangle -100 100 -50		-100 -100 -50		100 100 -50
 ambience 0.12 0.12 0.25
 diffuse 0.3 0.05 0.2
 specular 0.05 0.05 0.05
-specular_power 80
+specular_power 65
+reflection 0.1
 
 triangle -100 -100 -50	100 -100 -50		100 100 -50
 ambience 0.12 0.12 0.25
 diffuse 0.3 0.05 0.2
 specular 0.05 0.05 0.05
-specular_power 80
+specular_power 65
+reflection 0.1
 
 
 sphere 0 0 0 25

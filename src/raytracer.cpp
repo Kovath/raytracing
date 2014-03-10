@@ -21,9 +21,9 @@ struct ThreadData {
 
 RayTracer::RayTracer(list<Setting>& settings) {
 	//// default configuration
-	antialiasing = true;
-    _aa_sizex = 3;
-    _aa_sizey = 3;
+	antialiasing = false;
+    _aa_sizex = 1;
+    _aa_sizey = 1;
 	thread_count = 8;
 	filename = "img/0.png";
     depth_of_field = false;
@@ -211,8 +211,7 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				float b = atof(args[2].c_str());
 			
 				current_obj->set_ambient_c(Color(r, g, b));
-				break;
-			}
+			} break;
 			
 			case MATERIAL_DIFFUSE: {
 				float r = atof(args[0].c_str());
@@ -220,8 +219,7 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				float b = atof(args[2].c_str());
 			
 				current_obj->set_diffuse_c(Color(r, g, b));
-				break;
-			}
+			} break;
 			
 			case MATERIAL_SPECULAR: {
 				float r = atof(args[0].c_str());
@@ -229,16 +227,22 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				float b = atof(args[2].c_str());
 			
 				current_obj->set_specular_c(Color(r, g, b));
-				break;
-			}
+			} break;
 			
 			case MATERIAL_SPECULAR_POWER: {
 				unsigned int power = atoi(args[0].c_str());
-				
 				current_obj->set_specular_power(power);
-				break;
-			}
+			} break;
 			
+			case MATERIAL_REFRACTION: {
+				float refraction = atof(args[0].c_str());
+				current_obj->set_refraction_c(refraction);
+			} break;
+			
+			case MATERIAL_REFLECTION: {
+				float reflection = atof(args[0].c_str());
+				current_obj->set_reflection_c(reflection);
+			} break;
 			
 			
 			// TRANSFORMATIONS

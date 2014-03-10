@@ -34,7 +34,9 @@ RTInputParser::RTInputParser(istream& in) {
 		else if(keyword == "ambient") setting = Setting(MATERIAL_AMBIENCE); 
 		else if(keyword == "diffuse") setting = Setting(MATERIAL_DIFFUSE); 
 		else if(keyword == "specular") setting = Setting(MATERIAL_SPECULAR); 
-		else if(keyword == "specular_power") setting = Setting(MATERIAL_SPECULAR_POWER); 
+		else if(keyword == "specular_power") setting = Setting(MATERIAL_SPECULAR_POWER);
+		else if(keyword == "refraction") setting = Setting(MATERIAL_REFRACTION);
+		else if(keyword == "reflection") setting = Setting(MATERIAL_REFLECTION);
 		
 		else if(keyword == "translate") setting = Setting(TRANSFORM_TRANSLATE); 
 		else if(keyword == "rotate") setting = Setting(TRANSFORM_ROTATE); 
