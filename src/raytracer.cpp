@@ -17,16 +17,16 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     depth_of_field = false;
 
     // camera location
-    Point3f eye(0, -120, 40);
+    Point3f eye(0, -120, 20);
     // camera direction
-    Vector3f direction(0, 20, -10);
+    Vector3f direction(0, 20, 0);
     // camera orientation
-    Vector3f up(0, 10, 20);
+    Vector3f up(0, 0, 20);
     camera = new RectCamera(eye, direction, up);
     // set the resolution first
     camera->set_resolution(Vector2i(1000, 1000));
     // set x and y field of views to be 45 degrees
-    camera->set_fov(40, 40);
+    camera->set_fov(60, 60);
     camera->create_viewport();
 
     // DEPTH OF FIELD SETUP
@@ -50,7 +50,6 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 	for(vector<Setting>::iterator it = settings.begin(); it != settings.end(); ++it) {
 
 	}
-    antialiasing = true;
     depth_of_field = false;
 
 	color_buf = new Color*[camera->get_resolution()[0]];
@@ -59,33 +58,46 @@ RayTracer::RayTracer(vector<Setting>& settings) {
 
 
 	// loading primitives
+    /*
     // left sphere
 	Primitive *s = new Sphere(Point3f(-50,50,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 210);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
     // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.1, 0);
+    s->T.apply_transformation(SCALE, 1, 1, 3);
     scene.add_object(s);
 
     // middle sphere
-	s = new Sphere(Point3f(0,-50,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 210);
+	s = new Sphere(Point3f(0,-50,-25), 25);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
     // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.2, 0);
+    // transform the sphere by x
+    s->T.apply_transformation(SCALE, 3, 1, 1);
     scene.add_object(s);
 
     // right sphere
-	s = new Sphere(Point3f(50,0,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.6, 0.1, 0.1), Color(0.6, 0.6, 0.6), 210);
+	s = new Sphere(Point3f(50,30,0), 25);
+    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
     // set reflection strength to 0.8 and refraction strength to 1.0
     s->set_rnr(0.3, 0);
+    s->T.apply_transformation(SCALE, 1, 2, 1);
     scene.add_object(s);
+    */
 
     /*
     // equilateral triangle in middle
 	Primitive *t = new Triangle(Vector3f(0, 92.3760430703, 0), Vector3f(-80, -46.188, 0), Vector3f(80, -46.188, 0));
-    t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.4, 0.1, 0.2), Color(0.8, 0.8, 0.8), 80);
+    t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.5, 0.1, 0.4), Color(0.8, 0.8, 0.8), 80);
+    t->T.apply_transformation(ROTATION, Vector3f(0, 0, 1), 90);
     scene.add_object(t);
     */
+
+    // right angle triangle for testing rotations
+	Primitive *t = new Triangle(Vector3f(0, 0, 0), Vector3f(80, 0, 0), Vector3f(0, 80, 0));
+    t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.5, 0.1, 0.4), Color(0.8, 0.8, 0.8), 80);
+    t->T.apply_transformation(ROTATION, Vector3f(1, 1, 0), 90);
+    scene.add_object(t);
 
     // create a back wall at z
     int z = -25;
@@ -107,17 +119,18 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     scene.add_object(right_t);
 
 	// creating lights
+	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1.2,1.2,1.2));
+    scene.add_light(pl);
+
+    pl = new PointLight(Point3f(100, 100, 100), Color(0.6, 0.6, 0.6));
+    scene.add_light(pl);
+
     /*
-	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(0.7,0.7,0.7));
-    scene.add_light(pl);
-
-    pl = new PointLight(Point3f(100, 100, 0), Color(0.6, 0.6, 0.6));
-    scene.add_light(pl);
-
     pl = new PointLight(Point3f(25, -100, 0), Color(0.3, 0.3, 0.3));
     scene.add_light(pl);
     */
 
+    /*
     AreaLight *al = new AreaLight(Quad(Point3f(-100, 100, 100), Vector3f(40, 0, 0), Vector3f(0, -40, 0)), Color(1,1,1));
     // x*y points on the area light to check
     al->set_sample_size(3, 3);
@@ -127,6 +140,7 @@ RayTracer::RayTracer(vector<Setting>& settings) {
     // x*y points on the area light to check
     al->set_sample_size(3, 3);
     scene.add_light(al);
+    */
 }
 
 RayTracer::~RayTracer() {

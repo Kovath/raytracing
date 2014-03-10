@@ -14,6 +14,7 @@
 #include "pointlight.h"
 #include "arealight.h"
 #include "rectcamera.h"
+#include "transformation.h"
 
 // RAYTRACER
 class RayTracer {

@@ -20,6 +20,7 @@ class Ray {
         // setter functions
         void set_origin(Point3f origin);
         void set_pointAtT1(Point3f pointAtT1);
+        void set_point(Point3f thePoint);
 
         // getter functions
         Point3f get_origin();

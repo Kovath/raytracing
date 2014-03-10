@@ -1,11 +1,28 @@
 #include "sphere.h"
 
-Sphere::Sphere() {}
-Sphere::Sphere(Point3f center, float radius) : center(center), radius(radius) {}
+Sphere::Sphere() {
+}
+
+Sphere::Sphere(Point3f center, float radius) : center(center), radius(radius) {
+}
 
 bool Sphere::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
     Point3f ray_origin = ray.get_origin();
     Point3f ray_point = ray.get_point();
+
+    // code to apply inverse transformation of the object on the ray
+    /*
+    Vector3f ray_v = ray_point - ray_origin;
+    //cout << "untouched ray_v: " << ray_v << endl;
+    //cout << "inverse transformation: " << T.get_inverse_transformation().linear() << endl;
+    ray_v = T.get_inverse_transformation() * ray_v;
+    // the new ray_point is the transformed vector + the origin
+    //cout << "afterwards ray_v: " << ray_v << endl;
+    ray_point = ray_origin + ray_v;
+    */
+    ray_origin = T.get_inverse_transformation() * ray_origin;
+    ray_point = T.get_inverse_transformation() * ray_point;
+
 
     // a = dot(point, point)
     float a = ray_point.dot(ray_point);

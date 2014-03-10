@@ -7,6 +7,9 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 
     Point3f ray_point = ray.get_point();
     Point3f ray_origin = ray.get_origin();
 
+    ray_origin = T.get_inverse_transformation() * ray_origin;
+    ray_point = T.get_inverse_transformation() * ray_point;
+
     // edges of the triangle and normal
     Vector3f e0, e1, n;
     // Q = point on the plane

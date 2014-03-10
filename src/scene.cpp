@@ -38,11 +38,25 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
     }
     // if we hit an object
     if (did_collide(r, t, &obj)) {
+        Transform<float, 3, Affine> inverse_tr = obj->T.get_inverse_transformation();
+        Transform<float, 3, Affine> tr = obj->T.get_transformation();
+
+        // transform the ray
+        r.set_origin(inverse_tr*r.get_origin());
+        r.set_point(inverse_tr*r.get_point());
         Point3f collision_point = r.point_at_time(*t);
 
         // normal of the point hit and viewer vector won't change
-        Vector3f normal_v = obj->get_normal(collision_point);
-        Vector3f viewer_v = (r.get_origin() - collision_point);
+        Matrix3f normal_transform = tr.linear().inverse().transpose();
+        Vector3f normal_v = normal_transform * obj->get_normal(collision_point);
+
+        // transform the collision point back to world space
+        collision_point = tr * collision_point;
+        // transform the ray back to the world space
+        r.set_origin(tr*r.get_origin());
+        r.set_point(tr*r.get_point());
+
+        Vector3f viewer_v = (tr*r.get_origin() - collision_point);
         // calculate the reflected ray
         Ray reflected(collision_point, collision_point + -viewer_v + 2*(normal_v.dot(viewer_v))*normal_v);
         Vector3f reflected_v = -viewer_v + 2*(normal_v.dot(viewer_v))*normal_v;
@@ -120,7 +134,7 @@ bool Scene::did_collide_light(Ray r, float *t, Light **lite) {
 bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
     float min_time = -1;
     // the amount of leeway the ray gets (prevents self-shading)
-    float epsilon = 0.05;
+    float epsilon = 0.002;
 
     float temp = 0;
     float *tmp = &temp;

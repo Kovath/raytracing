@@ -4,6 +4,7 @@
 #include "include.h"
 #include "ray.h"
 #include "color.h"
+#include "transformation.h"
 
 // base class for anything being rendered on the scene
 class Primitive {
@@ -35,6 +36,9 @@ class Primitive {
         // cout <<
         friend ostream& operator<< (ostream& ostream, const Primitive p) { return ostream << "Primitive" << endl; };
 
+        // object that stores the transformation done on the object
+        Transformation T;
+
 	private:
 		// terms for determining the reflection
         Color ambient_c, diffuse_c, specular_c;
@@ -43,6 +47,7 @@ class Primitive {
         // terms for determining reflected strength and refraction strength
         // should be from 0 - 1
         float reflection_c, refraction_c;
+
 };
 
 #endif // PRIMITIVE_H

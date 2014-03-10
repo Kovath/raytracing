@@ -8,6 +8,10 @@ void Ray::set_pointAtT1(Point3f pointAtT1) {
     point = pointAtT1 - origin;
 }
 
+void Ray::set_point(Point3f thePoint) {
+    point = thePoint;
+}
+
 Point3f Ray::get_origin() {
     return origin;
 }
