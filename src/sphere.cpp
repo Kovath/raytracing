@@ -1,13 +1,13 @@
 #include "sphere.h"
 
 Sphere::Sphere() {
-    refraction_c = 0;
-    reflection_c = 0;
+    set_refraction_c(0);
+    set_reflection_c(0);
 }
 
 Sphere::Sphere(Point3f center, float radius) : center(center), radius(radius) {
-    refraction_c = 0;
-    reflection_c = 0;
+    set_refraction_c(0);
+    set_reflection_c(0);
 }
 
 bool Sphere::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {

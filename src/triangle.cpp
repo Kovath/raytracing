@@ -1,13 +1,13 @@
 #include "triangle.h"
 
 Triangle::Triangle() {
-    refraction_c = 0;
-    reflection_c = 0;
+    set_refraction_c(0);
+    set_reflection_c(0);
 }
 
 Triangle::Triangle(Vector3f p0, Vector3f p1, Vector3f p2): p0(p0), p1(p1), p2(p2) {
-    refraction_c = 0;
-    reflection_c = 0;
+    set_refraction_c(0);
+    set_reflection_c(0);
 }
 
 bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
