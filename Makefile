@@ -4,7 +4,7 @@ TESTBUILD := rtester
 
 CC := g++
 CCFLAGS := -Ilib -Wall
-LDFLAGS := 
+LDFLAGS := -lpthread
 
 SRCFOLDER := src
 OBJFOLDER := obj

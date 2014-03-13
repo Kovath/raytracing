@@ -163,7 +163,7 @@ bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
 }
 
 void Scene::printObjects() {
-    for (int i=0; i<objects.size(); i++) {
+    for (unsigned int i=0; i<objects.size(); i++) {
         cout << "diffuse: " << objects[i]->get_diffuse_c() << endl;
     }
 }
