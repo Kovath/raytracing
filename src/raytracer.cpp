@@ -21,12 +21,14 @@ struct ThreadData {
 
 RayTracer::RayTracer(list<Setting>& settings) {
 	//// default configuration
-	antialiasing = false;
-    _aa_sizex = 1;
-    _aa_sizey = 1;
+	antialiasing = true;
+    _aa_sizex = 5;
+    _aa_sizey = 5;
 	thread_count = 8;
 	filename = "img/0.png";
     depth_of_field = false;
+	
+	//// pre-initializations
 	camera = new RectCamera();
 
 	/*
@@ -119,13 +121,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
 	for(list<Setting>::iterator it = settings.begin(); it != settings.end(); it++) {
 		SettingType type = (*it).get_type();
 		vector<String> args = (*it).get_arguments();
-
-		cout << type << ": ";
-		for(unsigned int i = 0; i < args.size(); i++) {
-			cout << args[i] << " ";
-		}
-		cout << endl;
-		
 		
 		switch(type) {
 			// RENDER CONFIGURATIONS
@@ -318,8 +313,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
     for(int i=0; i<camera->get_resolution()[0]; i++) {
         color_buf[i] = new Color[camera->get_resolution()[1]];
 	}
-	
-	cout << "HI!" << endl;
 }
 
 RayTracer::~RayTracer() {
@@ -367,7 +360,7 @@ void thread_trace(void* d) {
 		end_row += height % thread_count;
 	}
 
-	// fill out the color array
+	// fill out the color e array
 	for (int i = 0; i < width; i ++) {
 		for (int j = start_row; j < end_row; j++) {
             tracer->trace(tracer->camera->get_cell(j, i), j, i);

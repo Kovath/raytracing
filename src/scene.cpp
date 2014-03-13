@@ -143,7 +143,7 @@ bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
 
     float temp = 0;
     float *tmp = &temp;
-    Primitive *tmpy;
+    Primitive *tmpy = NULL;
     for (unsigned int i=0; i<objects.size(); i++) {
         if (objects[i]->did_ray_hit(r, tmp, epsilon)) {
             if (*tmp < min_time || min_time == -1) {
@@ -163,7 +163,7 @@ bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
 }
 
 void Scene::printObjects() {
-    for (int i=0; i<objects.size(); i++) {
+    for (unsigned int i=0; i<objects.size(); i++) {
         cout << "diffuse: " << objects[i]->get_diffuse_c() << endl;
     }
 }
