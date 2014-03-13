@@ -245,7 +245,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				float r = atof(args[0].c_str());
 				float g = atof(args[1].c_str());
 				float b = atof(args[2].c_str());
-                cout << "diffuse : (" << r << ", " << g << ", " << b << ")" << endl;
 
 				current_obj->set_diffuse_c(Color(r, g, b));
 				break;
