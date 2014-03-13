@@ -120,6 +120,13 @@ RayTracer::RayTracer(list<Setting>& settings) {
 		SettingType type = (*it).get_type();
 		vector<String> args = (*it).get_arguments();
 
+		cout << type << ": ";
+		for(unsigned int i = 0; i < args.size(); i++) {
+			cout << args[i] << " ";
+		}
+		cout << endl;
+		
+		
 		switch(type) {
 			// RENDER CONFIGURATIONS
 			case CONFIG_OUTPUT_FILE: {
