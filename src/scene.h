@@ -25,6 +25,8 @@ class Scene {
         bool did_collide(Ray r, float *t, Primitive **obj);
         bool did_collide_light(Ray r, float *t, Light **lite);
 
+        void printObjects();
+
     private:
         vector<Primitive*> objects;
         vector<Light*> lights;

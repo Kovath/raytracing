@@ -30,5 +30,8 @@ Session.vim
 # ignore images
 **.png
 
+# ignore renders 
+test.render
+
 # OSX .gitignore
 **.DS_Store
