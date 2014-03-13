@@ -8,6 +8,7 @@ void PointLight::set_position(Point3f p) {
 }
 
 bool PointLight::did_ray_hit(Ray r, float *t) {
+    return false;
     // the vector of the ray
     Vector3f ray_v = r.get_point() - r.get_origin();
     ray_v.normalize();
@@ -15,7 +16,7 @@ bool PointLight::did_ray_hit(Ray r, float *t) {
     Vector3f light_v = position - r.get_origin();
     light_v.normalize();
     // if the dot product is near 1 then we have a collision
-    if (ray_v.dot(light_v) > 0.96)
+    if (ray_v.dot(light_v) > 0.9995)
         return true;
     else
         return false;

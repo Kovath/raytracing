@@ -7,6 +7,7 @@
 #include "color.h"
 #include "scene.h"
 #include "rectcamera.h"
+#include "transformation.h"
 
 // RAYTRACER
 class RayTracer {
