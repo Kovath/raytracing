@@ -10,6 +10,8 @@ Triangle::Triangle(Vector3f p0, Vector3f p1, Vector3f p2): p0(p0), p1(p1), p2(p2
     refraction_c = 0;
     reflection_c = 0;
     using_material = false;
+    set_refraction_c(0);
+    set_reflection_c(0);
 }
 
 bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
@@ -17,7 +19,7 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 
     Point3f ray_origin = ray.get_origin();
 
     ray_origin = T.get_inverse_transformation() * ray_origin;
-    ray_point = T.get_inverse_transformation() * ray_point;
+    ray_point = T.get_inverse_transformation().linear() * ray_point;
 
     // edges of the triangle and normal
     Vector3f e0, e1, n;

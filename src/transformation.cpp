@@ -18,15 +18,16 @@ void Transformation::apply_transformation(TransformationType t, float x, float y
                    0,   0, 1/z, 0;
             */
             break;
-        case TRANSLATION:
-            T = T*Translation<float, 3>(x, y, z);
+        case TRANSLATION: {
+            Vector3f trans(x, y, z);
+            T = T*Translation3f(trans);
             /*
             // inverse of translation is negated
             m << 1, 0, 0, -x,
                  0, 1, 0, -y,
                  0, 0, 1, -z;
             */
-            break;
+        } break;
         default:
             printf("apply_transformation called with non-valid transformationType! (scale or translation)\n");
             return;

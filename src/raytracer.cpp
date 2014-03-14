@@ -23,11 +23,13 @@ struct ThreadData {
 RayTracer::RayTracer(list<Setting>& settings) {
 	//// default configuration
 	antialiasing = false;
-    _aa_sizex = 3;
-    _aa_sizey = 3;
+    _aa_sizex = 5;
+    _aa_sizey = 5;
 	thread_count = 8;
 	filename = "img/0.png";
     depth_of_field = false;
+
+	//// pre-initializations
 	camera = new RectCamera();
 
     Primitive* current_obj = NULL;
@@ -54,8 +56,24 @@ RayTracer::RayTracer(list<Setting>& settings) {
 			} break;
 
 			case CONFIG_DEPTH_OF_FIELD: {
-
+                if (strcasecmp("false", args[0].c_str()) == 0) {
+                    depth_of_field = false;
+                } else if (strcasecmp("true", args[0].c_str()) == 0) {
+                    depth_of_field = true;
+                }
 			} break;
+
+            case CONFIG_FOCAL_LENGTH: {
+                // focal length (determines the z-distance in the scene that will be in focus)
+                // multiplied against the direction length to place the focus plane
+                camera->set_focal_length(atof(args[0].c_str()));
+            } break;
+
+            case CONFIG_APERATURE_SIZE: {
+                // determines size of sampling for a single focal point
+                // (determines how blurry out-of-focus-objects are)
+                camera->set_aperature_size(atof(args[0].c_str()));
+            } break;
 
 
 			// CAMERA CONFIGURATIONS
@@ -206,20 +224,33 @@ RayTracer::RayTracer(list<Setting>& settings) {
 
 			case OBJECT_SPECULAR_POWER: {
 				unsigned int power = atoi(args[0].c_str());
-
 				current_obj->set_specular_power(power);
 			} break;
 
-
-
 			// TRANSFORMATIONS
 			case TRANSFORM_TRANSLATE: {
+                float x = atof(args[0].c_str());
+                float y = atof(args[1].c_str());
+                float z = atof(args[2].c_str());
+                current_obj->T.apply_transformation(TRANSLATION, x, y, z);
 			} break;
 
 			case TRANSFORM_SCALE: {
+                float x = atof(args[0].c_str());
+                float y = atof(args[1].c_str());
+                float z = atof(args[2].c_str());
+                current_obj->T.apply_transformation(SCALE, x, y, z);
 			} break;
 
 			case TRANSFORM_ROTATE: {
+                // VECTOR X Y Z is the AXIS OF ROTATION
+                float x = atof(args[0].c_str());
+                float y = atof(args[1].c_str());
+                float z = atof(args[2].c_str());
+
+                float degrees = atof(args[3].c_str());
+
+                current_obj->T.apply_transformation(ROTATION, Vector3f(x,y,z), degrees);
 			} break;
 
 			default: break;
@@ -233,12 +264,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
 
 	camera->create_viewport();
 	// DEPTH OF FIELD SETUP
-    // determines size of sampling for a single focal point
-    // (determines how blurry out-of-focus-objects are)
-    camera->set_aperature_size(150);
-    // focal length (determines the z-distance in the scene that will be in focus)
-    // multiplied against the direction length to place the focus plane
-    camera->set_focal_length(4.2);
     // number of rays send through the aperture (4 by 4 grid)
     camera->set_aperature_ray_count(Vector2i(4, 4));
     camera->create_focal_plane();
@@ -294,7 +319,7 @@ void thread_trace(void* d) {
 		end_row += height % thread_count;
 	}
 
-	// fill out the color array
+	// fill out the color e array
 	for (int i = 0; i < width; i ++) {
 		for (int j = start_row; j < end_row; j++) {
             tracer->trace(tracer->camera->get_cell(j, i), j, i);

@@ -14,8 +14,11 @@ RTInputParser::RTInputParser(istream& in) {
 		sin  >> keyword;
 		if     (keyword == "thread") setting = Setting(CONFIG_THREADED);
 		else if(keyword == "antialiasing") setting = Setting(CONFIG_ANTIALIASING);
-		else if(keyword == "depthoffield") setting = Setting(CONFIG_DEPTH_OF_FIELD);
 		else if(keyword == "output") setting = Setting(CONFIG_OUTPUT_FILE);
+
+		else if(keyword == "depthoffield") setting = Setting(CONFIG_DEPTH_OF_FIELD);
+        else if(keyword == "focal_length") setting = Setting(CONFIG_FOCAL_LENGTH);
+        else if(keyword == "aperature_size") setting = Setting(CONFIG_APERATURE_SIZE);
 
 		else if(keyword == "cam_position") setting = Setting(CAMERA_POSITION);
 		else if(keyword == "cam_direction") setting = Setting(CAMERA_DIRECTION);

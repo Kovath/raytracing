@@ -3,7 +3,7 @@ PROJECT := raytracer
 TESTBUILD := rtester 
 
 CC := g++
-CCFLAGS := -Ilib -Wall
+CCFLAGS := -Ilib -Wall -O3
 LDFLAGS := 
 
 SRCFOLDER := src

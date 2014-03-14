@@ -52,19 +52,21 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
 
         // transform the ray
         r.set_origin(inverse_tr*r.get_origin());
-        r.set_point(inverse_tr*r.get_point());
+        r.set_point(inverse_tr.linear()*r.get_point());
+
         // collision point in object space (unit sphere)
         Point3f collision_point = r.point_at_time(*t);
 
         // store the untransformed version of the collision point for texture mapping
         Point3f untransformed_collision_point = collision_point;
 
-        // normal of the point hit and viewer vector won't change
-        Matrix3f normal_transform = tr.linear().inverse().transpose();
-        Vector3f normal_v = normal_transform * obj->get_normal(collision_point);
-
         // transform the collision point back to world space
         collision_point = tr * collision_point;
+
+        // normal of the point hit and viewer vector won't change
+        Matrix3f normal_transform = tr.linear().inverse().transpose();
+        Vector3f normal_v = (normal_transform * obj->get_normal(collision_point)).normalized();
+
         // transform the ray back to the world space
         r.set_origin(tr*r.get_origin());
         r.set_point(tr*r.get_point());
@@ -162,7 +164,7 @@ bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
 
     float temp = 0;
     float *tmp = &temp;
-    Primitive *tmpy;
+    Primitive *tmpy = NULL;
     for (unsigned int i=0; i<objects.size(); i++) {
         if (objects[i]->did_ray_hit(r, tmp, epsilon)) {
             if (*tmp < min_time || min_time == -1) {
@@ -182,7 +184,7 @@ bool Scene::did_collide(Ray r, float *t, Primitive **obj) {
 }
 
 void Scene::printObjects() {
-    for (int i=0; i<objects.size(); i++) {
+    for (unsigned int i=0; i<objects.size(); i++) {
         cout << "diffuse: " << objects[i]->get_diffuse_c() << endl;
     }
 }

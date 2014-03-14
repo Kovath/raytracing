@@ -10,6 +10,7 @@
 // base class for anything being rendered on the scene
 class Primitive {
     public:
+		EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         virtual bool did_ray_hit(Ray r, float* intersection_t, float epsilon = 0);
         virtual Vector3f get_normal(Point3f point);
         virtual Color get_material_color_for_point(Point3f point, Material *m);
