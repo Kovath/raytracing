@@ -1,16 +1,27 @@
 #include "primitive.h"
 
-bool Primitive::did_ray_hit(Ray r, float* intersection_t, float epsilon) { 
+bool Primitive::did_ray_hit(Ray r, float* intersection_t, float epsilon) {
 	printf("primitive did_ray_hit!!!!\n");
-	return false; 
+	return false;
 }
 
 Vector3f Primitive::get_normal(Point3f point) {
 	printf("primitive get_normal??\n");
-	return Vector3f(0, 0, 0); 
+	return Vector3f(0, 0, 0);
 }
 
+Color Primitive::get_material_color_for_point(Point3f point, Material *m) {
+    printf("primitive get_material_color??\n");
+    return Color(0, 0, 0);
+}
 
+Vector3f Primitive::get_up_v() {
+    return up_v;
+}
+
+Vector3f Primitive::get_direction_v() {
+    return direction_v;
+}
 
 Color Primitive::get_ambient_c() {
 	return ambient_c;
@@ -61,6 +72,14 @@ void Primitive::set_refraction_c(float new_refraction) {
     refraction_c = new_refraction;
 }
 
+void Primitive::set_up_v(Vector3f new_up_v) {
+    up_v = new_up_v;
+}
+
+void Primitive::set_direction_v(Vector3f new_direction_v) {
+    direction_v = new_direction_v;
+}
+
 // set the reflection and refraction both
 void Primitive::set_rnr(float new_reflection, float new_refraction) {
     reflection_c = new_reflection;
@@ -74,6 +93,6 @@ void Primitive::set_shading_c(Color ambient, Color diffuse, Color specular, unsi
 	specular_power = specular_pow;
 }
 
-ostream& operator<< (ostream& ostream, const Primitive p) { 
+ostream& operator<< (ostream& ostream, const Primitive p) {
 	return ostream << "Primitive" << endl;
 };

@@ -1,13 +1,17 @@
 #include "sphere.h"
 
+#define PI 3.14159265359
+
 Sphere::Sphere() {
     refraction_c = 0;
     reflection_c = 0;
+    using_material = false;
 }
 
 Sphere::Sphere(Point3f center, float radius) : center(center), radius(radius) {
     refraction_c = 0;
     reflection_c = 0;
+    using_material = false;
 }
 
 bool Sphere::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
@@ -78,6 +82,41 @@ Vector3f Sphere::get_normal(Point3f point) {
     Vector3f normal_v = point - center;
     normal_v.normalize();
     return normal_v;
+}
+
+Color Sphere::get_material_color_for_point(Point3f point, Material *m) {
+    Vector3f Vp = (point - center).normalized();
+    Vector3f Vn = up_v.normalized();
+    Vector3f Vd = direction_v.normalized().cross(Vn);
+
+    // longitude and latitude
+    float u, v;
+
+    float r = acos((Vn).dot(Vp));
+    //printf("r: %f\n", (r * 180.0)/PI);
+    v = r/PI;
+
+    float theta = 0;
+    //printf("top(): %f\n", (Vp.dot(Vd)));
+    //printf("sin(r): %f\n", sin(r));
+    // if we're at the bottom or top of the sphere, then theta is 0
+    if (sin(r) < 0.0005)
+        theta = 0;
+    else {
+        float divide = ((Vp.dot(Vd)) / sin(r));
+        if (divide > 1) divide = 1;
+        //printf("divide: %f\n", divide);
+        //printf("acos: %f\n",  (acos(divide)));
+        theta = acos(divide);
+    }
+    //printf("theta: %f\n", theta);
+    theta /= PI;
+    if ((Vn.cross(Vd)).dot(Vp) > 0)
+        u = theta;
+    else
+        u = 1-theta;
+
+    return m->get_color(u, v);
 }
 
 // setters

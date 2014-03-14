@@ -1,0 +1,176 @@
+# materials
+# image file || width || height
+# reference the materials by tag (order they come in)
+material textures/PoolBallTEST.png 1024 1024 # material 0
+material textures/PoolBall1.png 1024 1024 # material 1
+material textures/PoolBall2.png 1024 1024 # material 2
+material textures/PoolBall3.png 1024 1024 # material 3
+material textures/PoolBall4.png 1024 1024 # material 4
+material textures/PoolBall5.png 1024 1024 # material 5
+material textures/PoolBall6.png 1024 1024 # material 6
+material textures/PoolBall7.png 1024 1024 # material 7
+material textures/PoolBall8.png 1024 1024 # material 8
+material textures/PoolBall9.png 1024 1024 # material 9
+material textures/PoolBall10.png 1024 1024 # material 10
+material textures/PoolBall11.png 1024 1024 # material 11
+material textures/PoolBall12.png 1024 1024 # material 12
+material textures/PoolBall13.png 1024 1024 # material 13
+material textures/PoolBall14.png 1024 1024 # material 14
+material textures/PoolBall15.png 1024 1024 # material 15
+
+
+output img/renderfile2.png
+thread 8
+antialiasing true
+depthoffield true 
+
+# camera config
+
+cam_position 180 -490 480
+cam_direction -5 20 -25
+cam_orientation -5 20 25 
+
+#cam_position 0 0 400
+#cam_direction 0 0 -1
+#cam_orientation 0 1 0
+cam_resolution 500 500 
+cam_fov 30 30
+
+# objects
+triangle -2000 2000 -100		-2000 -2000 -100		2000 2000 -100
+ambience 0.02 0.45 0.12
+diffuse 0.05 0.35 0.08
+specular 0.05 0.05 0.05
+specular_power 80
+
+triangle -2000 -2000 -100     	2000 -2000 -100		2000 2000 -100
+ambience 0.02 0.45 0.12
+diffuse 0.05 0.35 0.08
+specular 0.05 0.05 0.05
+specular_power 80
+
+
+sphere 0 0 0 100 
+using_material 2
+reflection 0.3
+up_vector 0 1 0
+direction_vector -1 0.2 1
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 200 0 0 100 
+using_material 3
+reflection 0.3
+up_vector 0 0 1
+direction_vector 1 0 0 
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 100 -200 0 100 
+using_material 4
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere -200 0 0 100 
+using_material 5
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere -100 -200 0 100 
+using_material 6
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 0 -400 0 100 
+using_material 1
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 100 200 0 100 
+using_material 8
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere -100 200 0 100 
+using_material 9
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere -300 200 0 100 
+using_material 10
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 300 200 0 100 
+using_material 11
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 400 400 0 100 
+using_material 12
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 0 400 0 100 
+using_material 13
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere -200 400 0 100 
+using_material 14
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere -400 400 0 100 
+using_material 15
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+sphere 200 400 0 100 
+using_material 7
+reflection 0.3
+up_vector 0 0 1
+direction_vector 0 -10
+specular 0.8 0.8 0.8 
+specular_power 256 
+
+# lights
+# area_light 300 200 500     0 0 40      0 -40 0      1.2 1.2 1.2
+point_light 300 200 500   1.2 1.2 1.2
+point_light -300 300 400   0.8 0.8 0.8

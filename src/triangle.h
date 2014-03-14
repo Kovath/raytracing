@@ -16,6 +16,8 @@ class Triangle : public Primitive {
         bool did_ray_hit(Ray ray, float *intersection_t, float epsilon=0);
         // returns the normalized normal vector of a point
         Vector3f get_normal(Point3f point);
+        // returns the color for a point
+        Color get_material_color_for_point(Point3f point, Material *m);
 
         // setter functions
         void set_p0(Point3f p);

@@ -13,8 +13,12 @@ void Scene::add_light(Light *l) {
     lights.push_back(l);
 }
 
-Color calc_diffuse(Primitive *obj, Light *light, Vector3f light_v, Vector3f normal_v) {
-    Color color = obj->get_diffuse_c() * light->get_intensity() * light_v.dot(normal_v);
+void Scene::add_material(Material *m) {
+    materials.push_back(m);
+}
+
+Color calc_diffuse(Color obj_diffuse, Light *light, Vector3f light_v, Vector3f normal_v) {
+    Color color = obj_diffuse * light->get_intensity() * light_v.dot(normal_v);
     if (color.r < 0) color.r = 0;
     if (color.g < 0) color.g = 0;
     if (color.b < 0) color.b = 0;
@@ -49,7 +53,11 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
         // transform the ray
         r.set_origin(inverse_tr*r.get_origin());
         r.set_point(inverse_tr*r.get_point());
+        // collision point in object space (unit sphere)
         Point3f collision_point = r.point_at_time(*t);
+
+        // store the untransformed version of the collision point for texture mapping
+        Point3f untransformed_collision_point = collision_point;
 
         // normal of the point hit and viewer vector won't change
         Matrix3f normal_transform = tr.linear().inverse().transpose();
@@ -67,6 +75,16 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
         Vector3f reflected_v = -viewer_v + 2*(normal_v.dot(viewer_v))*normal_v;
         reflected_v.normalize();
         viewer_v.normalize();
+
+        Color diff_c, ambient_c;
+        if (obj->using_material) {
+            Material *m = materials[obj->material_tag];
+            diff_c = obj->get_material_color_for_point(untransformed_collision_point, m);
+            ambient_c = Color(0.1, 0.1, 0.1) * diff_c;
+        } else {
+            diff_c = obj->get_diffuse_c();
+            ambient_c = obj->get_ambient_c();
+        }
 
         // go through all the lights checking if a ray from that point would hit the light
         for (unsigned int i=0; i<lights.size(); i++) {
@@ -100,8 +118,9 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
                     Vector3f light_reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
                     light_reflected_v.normalize();
 
-                    // DIFFUSE AND SPECULAR TERMS HERE
-                    add = add + calc_diffuse(obj, lights[i], light_v, normal_v);
+                    // DIFFUSE AND SPECULAR
+                    // diffuse depends on whether a material is being used or not
+                    add = add + calc_diffuse(diff_c, lights[i], light_v, normal_v);
                     add = add + calc_specular(obj, lights[i], light_reflected_v, viewer_v);
                 }
             }
@@ -109,7 +128,7 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
             add /= *n;
 
             // AMBIENT TERM
-            add += lights[i]->get_intensity()*obj->get_ambient_c();
+            add += lights[i]->get_intensity()*ambient_c;
 
             // add color of the light to the color returned
             ret += add;

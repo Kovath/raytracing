@@ -3,11 +3,13 @@
 Triangle::Triangle() {
     refraction_c = 0;
     reflection_c = 0;
+    using_material = false;
 }
 
 Triangle::Triangle(Vector3f p0, Vector3f p1, Vector3f p2): p0(p0), p1(p1), p2(p2) {
     refraction_c = 0;
     reflection_c = 0;
+    using_material = false;
 }
 
 bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */) {
@@ -67,6 +69,11 @@ Vector3f Triangle::get_normal(Point3f point) {
     Vector3f ret = (p1 - p0).cross(p2 - p0);
     ret.normalize();
     return ret;
+}
+
+Color Triangle::get_material_color_for_point(Point3f point, Material *m) {
+    printf("not implemented yet!\n");
+    return Color(0,0,0);
 }
 
 void Triangle::set_p0(Vector3f point) {

@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "rectcamera.h"
 #include "transformation.h"
+#include "material.h"
 
 // RAYTRACER
 class RayTracer {

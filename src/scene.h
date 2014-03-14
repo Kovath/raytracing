@@ -5,6 +5,7 @@
 #include "primitive.h"
 #include "light.h"
 #include "color.h"
+#include "material.h"
 
 class Scene {
     public:
@@ -15,6 +16,8 @@ class Scene {
         void add_object(Primitive *p);
         // adds a light to the light list
         void add_light(Light *l);
+        // adds a material to the scene
+        void add_material(Material *m);
 
         // returns a color after bouncing the ray through the scene
         // calculates the reflection recursively (limit times max)
@@ -30,6 +33,7 @@ class Scene {
     private:
         vector<Primitive*> objects;
         vector<Light*> lights;
+        vector<Material*> materials;
 };
 
 #endif // SCENE_H

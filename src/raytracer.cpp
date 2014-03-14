@@ -9,6 +9,7 @@
 #include "object.h"
 #include "pointlight.h"
 #include "arealight.h"
+#include "strings.h"
 
 // THREADING
 using namespace tthread;
@@ -29,92 +30,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
     depth_of_field = false;
 	camera = new RectCamera();
 
-	/*
-	// loading primitives
-    // left sphere
-	Primitive *s = new Sphere(Point3f(-50,50,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
-    // set reflection strength to 0.8 and refraction strength to 1.0
-    s->set_rnr(0.1, 0);
-    s->T.apply_transformation(SCALE, 1, 1, 3);
-    scene.add_object(s);
-
-    // middle sphere
-	s = new Sphere(Point3f(0,-50,-25), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
-    // set reflection strength to 0.8 and refraction strength to 1.0
-    s->set_rnr(0.2, 0);
-    // transform the sphere by x
-    s->T.apply_transformation(SCALE, 3, 1, 1);
-    scene.add_object(s);
-
-    // right sphere
-	s = new Sphere(Point3f(50,30,0), 25);
-    s->set_shading_c(Color(0.3, 0.05, 0.1), Color(0.4, 0.1, 0.1), Color(0.8, 0.8, 0.8), 256);
-    // set reflection strength to 0.8 and refraction strength to 1.0
-    s->set_rnr(0.3, 0);
-    s->T.apply_transformation(SCALE, 1, 2, 1);
-    scene.add_object(s);
-    */
-
-    /*
-    // equilateral triangle in middle
-	Primitive *t = new Triangle(Vector3f(0, 92.3760430703, 0), Vector3f(-80, -46.188, 0), Vector3f(80, -46.188, 0));
-    t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.5, 0.1, 0.4), Color(0.8, 0.8, 0.8), 80);
-    t->T.apply_transformation(ROTATION, Vector3f(0, 0, 1), 90);
-    scene.add_object(t);
-    */
-
-    /*
-    // right angle triangle for testing rotations
-	Primitive *t = new Triangle(Vector3f(0, 0, 0), Vector3f(80, 0, 0), Vector3f(0, 80, 0));
-    t->set_shading_c(Color(0.15, 0.08, 0.25), Color(0.5, 0.1, 0.4), Color(0.8, 0.8, 0.8), 80);
-    t->T.apply_transformation(ROTATION, Vector3f(1, 1, 0), 90);
-    scene.add_object(t);
-
-    // create a back wall at z
-    int z = -25;
-    float size = 500;
-
-    Color amb(0.12, 0.12, 0.25);
-    Color dif(0.3, 0.05, 0.2);
-    Color spec(0.05, 0.05, 0.05);
-    int power = 80;
-
-    Primitive *left_t = new Triangle(Vector3f(-size, size, z), Vector3f(-size, -size, z), Vector3f(size, -size, z));
-    left_t->set_shading_c(amb, dif, spec, power);
-    left_t->set_rnr(0.1, 0);
-    scene.add_object(left_t);
-
-    Primitive *right_t = new Triangle(Vector3f(-size, size, z), Vector3f(size, -size, z), Vector3f(size, size, z));
-    right_t->set_shading_c(amb, dif, spec, power);
-    right_t->set_rnr(0.1, 0);
-    scene.add_object(right_t);
-
-	// creating lights
-	PointLight *pl = new PointLight(Point3f(-100,100,100), Color(1.2,1.2,1.2));
-    scene.add_light(pl);
-
-    pl = new PointLight(Point3f(100, 100, 100), Color(0.6, 0.6, 0.6));
-    scene.add_light(pl);
-    */
-
-    /*
-    pl = new PointLight(Point3f(25, -100, 0), Color(0.3, 0.3, 0.3));
-    scene.add_light(pl);
-
-    AreaLight *al = new AreaLight(Quad(Point3f(-100, 100, 100), Vector3f(40, 0, 0), Vector3f(0, -40, 0)), Color(1,1,1));
-    // x*y points on the area light to check
-    al->set_sample_size(3, 3);
-    scene.add_light(al);
-
-    al = new AreaLight(Quad(Point3f(150, 20, 50), Vector3f(0, -40, 0), Vector3f(0, 0, -20)), Color(1,1,1));
-    // x*y points on the area light to check
-    al->set_sample_size(3, 3);
-    scene.add_light(al);
-	*/
-
-
     Primitive* current_obj = NULL;
 	for(list<Setting>::iterator it = settings.begin(); it != settings.end(); it++) {
 		SettingType type = (*it).get_type();
@@ -131,13 +46,16 @@ RayTracer::RayTracer(list<Setting>& settings) {
 			} break;
 
 			case CONFIG_ANTIALIASING: {
-
+                if (strcasecmp("false", args[0].c_str()) == 0) {
+                    antialiasing = false;
+                } else if (strcasecmp("true", args[0].c_str()) == 0) {
+                    antialiasing = true;
+                }
 			} break;
 
 			case CONFIG_DEPTH_OF_FIELD: {
 
 			} break;
-
 
 
 			// CAMERA CONFIGURATIONS
@@ -175,6 +93,11 @@ RayTracer::RayTracer(list<Setting>& settings) {
 			} break;
 
 
+            // MATERIAL ADDITION
+            case NEW_MATERIAL: {
+                Material *m = new Material(args[0], atoi(args[1].c_str()), atoi(args[2].c_str()));
+                scene.add_material(m);
+            } break;
 
 			// LIGHT CONFIGURATION
 			case LIGHT_POINT: {
@@ -200,8 +123,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
 
 			} break;
 
-
-
 			// OBJECT CONFIGURATION
 			case OBJECT_SPHERE: {
 				if(current_obj != NULL) scene.add_object(current_obj);
@@ -211,7 +132,6 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				float radius = atof(args[3].c_str());
 
 				current_obj = new Sphere(Point3f(x, y, z), radius);
-                current_obj->set_rnr(0.3, 0);
 			} break;
 
 			case OBJECT_TRIANGLE: {
@@ -229,57 +149,78 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				current_obj = new Object(args[0]);
 			} break;
 
+			// OBJECT CONFIGURATION
+            case OBJECT_USING_MATERIAL: {
+                int tag_num = atoi(args[0].c_str());
+                current_obj->using_material = true;
+                current_obj->material_tag = tag_num;
+            } break;
 
+            case OBJECT_UP_VECTOR: {
+                float x = atof(args[0].c_str());
+                float y = atof(args[1].c_str());
+                float z = atof(args[2].c_str());
 
-			// MATERIAL CONFIGURATION
-			case MATERIAL_AMBIENCE: {
+                current_obj->set_up_v(Vector3f(x, y, z));
+            } break;
+
+            case OBJECT_DIRECTION_VECTOR: {
+                float x = atof(args[0].c_str());
+                float y = atof(args[1].c_str());
+                float z = atof(args[2].c_str());
+
+                current_obj->set_direction_v(Vector3f(x, y, z));
+            } break;
+
+            case OBJECT_REFLECTION: {
+                current_obj->set_reflection_c(atof(args[0].c_str()));
+            } break;
+
+            case OBJECT_REFRACTION: {
+                current_obj->set_refraction_c(atof(args[0].c_str()));
+            } break;
+
+			case OBJECT_AMBIENCE: {
 				float r = atof(args[0].c_str());
 				float g = atof(args[1].c_str());
 				float b = atof(args[2].c_str());
 
 				current_obj->set_ambient_c(Color(r, g, b));
-				break;
-			}
+			} break;
 
-			case MATERIAL_DIFFUSE: {
+			case OBJECT_DIFFUSE: {
 				float r = atof(args[0].c_str());
 				float g = atof(args[1].c_str());
 				float b = atof(args[2].c_str());
 
 				current_obj->set_diffuse_c(Color(r, g, b));
-				break;
-			}
+			} break;
 
-			case MATERIAL_SPECULAR: {
+			case OBJECT_SPECULAR: {
 				float r = atof(args[0].c_str());
 				float g = atof(args[1].c_str());
 				float b = atof(args[2].c_str());
 
 				current_obj->set_specular_c(Color(r, g, b));
-				break;
-			}
+			} break;
 
-			case MATERIAL_SPECULAR_POWER: {
+			case OBJECT_SPECULAR_POWER: {
 				unsigned int power = atoi(args[0].c_str());
 
 				current_obj->set_specular_power(power);
-				break;
-			}
+			} break;
 
 
 
 			// TRANSFORMATIONS
 			case TRANSFORM_TRANSLATE: {
-				break;
-			}
+			} break;
 
 			case TRANSFORM_SCALE: {
-				break;
-			}
+			} break;
 
 			case TRANSFORM_ROTATE: {
-				break;
-			}
+			} break;
 
 			default: break;
 		}
@@ -297,7 +238,7 @@ RayTracer::RayTracer(list<Setting>& settings) {
     camera->set_aperature_size(150);
     // focal length (determines the z-distance in the scene that will be in focus)
     // multiplied against the direction length to place the focus plane
-    camera->set_focal_length(3.2);
+    camera->set_focal_length(4.2);
     // number of rays send through the aperture (4 by 4 grid)
     camera->set_aperature_ray_count(Vector2i(4, 4));
     camera->create_focal_plane();
@@ -442,7 +383,7 @@ void RayTracer::trace(Cell c, int x, int y) {
     if (total_c.g > 1) total_c.g = 1;
     if (total_c.b > 1) total_c.b = 1;
 
-    color_buf[x][y] += total_c;
+    color_buf[x][y] = total_c;
 }
 
 void RayTracer::save() {

@@ -41,18 +41,12 @@ void Transformation::apply_transformation(TransformationType t, Vector3f r, floa
     }
     // make sure r is the normal vector
     r.normalize();
-    cout << "r : " << r << endl;
-    cout << "degrees : " << degrees << endl;
 
     AngleAxisf a(PI/2, r);
     float radians = (degrees * PI / 180);
     Vector3f z = r*sin(radians/2);
     Quaternionf q(cos(radians/2), z[0], z[1], z[2]);
     Vector3f test(1, 0, 0);
-    cout << "test: " << test << endl;
-    //test = q*test;
-    test = a*test;
-    cout << "test: " << test << endl;
 
     T = T*q;
 }
