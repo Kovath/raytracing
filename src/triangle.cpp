@@ -54,6 +54,8 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 
     // to test if the point Q is inside the triangle, we compare the normal of the plane
     // with the cross product of each edge of the triangle
     r0 = (e0.cross(Q - p0)).dot(n);
+
+
     // if the result is negative, the point is outside the triangle (relies on the
     // ordering of the cross product
     if (r0 < 0) return false;

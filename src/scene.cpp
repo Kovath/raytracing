@@ -51,7 +51,7 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
         Transform<float, 3, Affine> tr = obj->T.get_transformation();
 
         // transform the ray
-        r.set_origin(inverse_tr*r.get_origin());
+        //r.set_origin(inverse_tr*r.get_origin());
         r.set_point(inverse_tr.linear()*r.get_point());
 
         // collision point in object space (unit sphere)
@@ -64,11 +64,11 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
         collision_point = tr * collision_point;
 
         // normal of the point hit and viewer vector won't change
-        Matrix3f normal_transform = tr.linear().inverse().transpose();
-        Vector3f normal_v = (normal_transform * obj->get_normal(collision_point)).normalized();
+        Matrix3f normal_transform = inverse_tr.linear().transpose();
+        Vector3f normal_v = (normal_transform * obj->get_normal(untransformed_collision_point)).normalized();
 
         // transform the ray back to the world space
-        r.set_origin(tr*r.get_origin());
+        //r.set_origin(tr*r.get_origin());
         r.set_point(tr*r.get_point());
 
         Vector3f viewer_v = (tr*r.get_origin() - collision_point);

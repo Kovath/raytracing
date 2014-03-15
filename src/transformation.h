@@ -20,8 +20,10 @@ class Transformation {
         Transform<float,3,Affine> get_inverse_transformation();
         Transform<float,3,Affine> get_transformation();
     private:
+        Transform<float,3,Affine> I;
         // T is the transform matrix of all the transformations applied to the object
         Transform<float,3,Affine> T;
+        // I is the inverse
 
 
 };

@@ -4,13 +4,15 @@
 
 Transformation::Transformation() {
     T.setIdentity();
+    I.setIdentity();
 }
 
 void Transformation::apply_transformation(TransformationType t, float x, float y, float z) {
     // create the matrix
     switch(t) {
         case SCALE:
-            T = T*Scaling(x, y, z);
+            T.scale(Vector3f(x, y, z));
+            I.prescale(Vector3f(1.0f/x, 1.0f/y, 1.0f/z));
             /*
             // inverse of scale is flipped
             m << 1/x,   0,   0, 0,
@@ -20,7 +22,9 @@ void Transformation::apply_transformation(TransformationType t, float x, float y
             break;
         case TRANSLATION: {
             Vector3f trans(x, y, z);
+            Vector3f trans_i(-x, -y, -z);
             T = T*Translation3f(trans);
+            I = Translation3f(trans_i)*I;
             /*
             // inverse of translation is negated
             m << 1, 0, 0, -x,
@@ -47,13 +51,14 @@ void Transformation::apply_transformation(TransformationType t, Vector3f r, floa
     float radians = (degrees * PI / 180);
     Vector3f z = r*sin(radians/2);
     Quaternionf q(cos(radians/2), z[0], z[1], z[2]);
-    Vector3f test(1, 0, 0);
+    Quaternionf q_i(cos(-radians/2), z[0], z[1], z[2]);
 
     T = T*q;
+    I = q_i*I;
 }
 
 Transform<float, 3, Affine> Transformation::get_inverse_transformation() {
-    return T.inverse();
+    return I;
 }
 
 Transform<float,3,Affine> Transformation::get_transformation() {

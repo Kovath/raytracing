@@ -28,9 +28,8 @@ bool Sphere::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 */
     //cout << "afterwards ray_v: " << ray_v << endl;
     ray_point = ray_origin + ray_v;
     */
-    ray_origin = T.get_inverse_transformation() * ray_origin;
+    //ray_origin = T.get_inverse_transformation() * ray_origin;
     ray_point = T.get_inverse_transformation().linear() * ray_point;
-
 
     // a = dot(point, point)
     float a = ray_point.dot(ray_point);

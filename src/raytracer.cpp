@@ -265,7 +265,7 @@ RayTracer::RayTracer(list<Setting>& settings) {
 	camera->create_viewport();
 	// DEPTH OF FIELD SETUP
     // number of rays send through the aperture (4 by 4 grid)
-    camera->set_aperature_ray_count(Vector2i(4, 4));
+    camera->set_aperature_ray_count(Vector2i(6, 6));
     camera->create_focal_plane();
 
 	color_buf = new Color*[camera->get_resolution()[0]];
@@ -376,7 +376,7 @@ Color RayTracer::aa_compute(Cell c, int x, int y) {
             Vector3f jitter_h = grid_h * (((rand() % 60) / 100.0) - 0.3);
             Ray r(camera->get_position(), c.get_top_left() + grid_w/2 + grid_h/2 + jitter_w + jitter_h
                     + grid_w*i + grid_h*j);
-            total_c += scene.handle_ray(r, 2);
+            total_c += scene.handle_ray(r, 1);
         }
     }
     total_c /= gridx * gridy;
@@ -385,7 +385,7 @@ Color RayTracer::aa_compute(Cell c, int x, int y) {
 
 Color RayTracer::compute(Cell c, int x, int y) {
     Ray r(camera->get_position(), c.get_center());
-    return scene.handle_ray(r, 2);
+    return scene.handle_ray(r, 1);
 }
 
 
@@ -420,9 +420,15 @@ void RayTracer::save() {
 	unsigned char* image = new unsigned char[width * height * rgb_size];
 	for(int x = 0; x < width; x++) {
 		for(int y = 0; y < height; y++) {
-			image[(y * width + x) * rgb_size + 0] = (int)(color_buf[x][y].r * 255.0);
-			image[(y * width + x) * rgb_size + 1] = (int)(color_buf[x][y].g * 255.0);
-			image[(y * width + x) * rgb_size + 2] = (int)(color_buf[x][y].b * 255.0);
+			int r = (int)(color_buf[x][y].r * 255.0) & 0xff;
+            memcpy(image + (y*width + x) * rgb_size + 0, &r, 1);
+			int g = (int)(color_buf[x][y].g * 255.0) & 0xff;
+            memcpy(image + (y*width + x) * rgb_size + 1, &g, 1);
+			int b = (int)(color_buf[x][y].b * 255.0) & 0xff;
+            memcpy(image + (y*width + x) * rgb_size + 2, &b, 1);
+			//image[(y * width + x) * rgb_size + 0] = (int)(color_buf[x][y].r * 255.0) & 0xff;
+			//image[(y * width + x) * rgb_size + 1] = (int)(color_buf[x][y].g * 255.0) & 0xff;
+			//image[(y * width + x) * rgb_size + 2] = (int)(color_buf[x][y].b * 255.0) & 0xff;
 		}
 	}
 
