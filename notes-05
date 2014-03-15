@@ -1,0 +1,13 @@
+To run code: 
+    1. make
+    2. ./raytracer image-XX
+    3. (output image is located in /img folder)
+
+./raytracer image-05
+
+3.29 seconds to render.
+
+Features:
+    Transformed triangle (rotated 90 clockwise, scaled by 2, and translated up by 100)
+    Transformed shadows
+    Point lights

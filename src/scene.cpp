@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "point.h"
+#include "directionallight.h"
 
 Scene::Scene() {
 
@@ -51,7 +52,7 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
         Transform<float, 3, Affine> tr = obj->T.get_transformation();
 
         // transform the ray
-        //r.set_origin(inverse_tr*r.get_origin());
+        r.set_origin(inverse_tr*r.get_origin());
         r.set_point(inverse_tr.linear()*r.get_point());
 
         // collision point in object space (unit sphere)
@@ -95,6 +96,7 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
             // get positions to interpolate the light from
             Point3f *pos_array = lights[i]->get_positions(n);
 
+            Color add(0, 0, 0);
             Vector3f jitter(0,0,0);
             bool jit = false;
             if (*n > 1) {
@@ -102,7 +104,6 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
                 jit = true;
             }
 
-            Color add(0, 0, 0);
             for (int j=0; j<*n; j++) {
                 // jitter the jitter
                 if (jit) {
@@ -128,6 +129,19 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
             }
             // average the color added by the number of points checked
             add /= *n;
+
+            if (*n == 0) {
+                add.r = 0; add.g = 0; add.b = 0;
+                Vector3f light_v = -((DirectionalLight *)lights[i])->get_direction();
+                light_v.normalize();
+                Vector3f light_reflected_v = -light_v + 2*(light_v.dot(normal_v))*normal_v;
+                light_reflected_v.normalize();
+
+                // DIFFUSE AND SPECULAR
+                // diffuse depends on whether a material is being used or not
+                add = add + calc_diffuse(diff_c, lights[i], light_v, normal_v);
+                add = add + calc_specular(obj, lights[i], light_reflected_v, viewer_v);
+            }
 
             // AMBIENT TERM
             add += lights[i]->get_intensity()*ambient_c;

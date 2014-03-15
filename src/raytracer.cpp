@@ -8,6 +8,7 @@
 #include "triangle.h"
 #include "object.h"
 #include "pointlight.h"
+#include "directionallight.h"
 #include "arealight.h"
 #include "strings.h"
 
@@ -133,12 +134,18 @@ RayTracer::RayTracer(list<Setting>& settings) {
 				float r  = atof(args[9].c_str()); float g = atof(args[10].c_str()); float b  = atof(args[11].c_str());
 
 				Light* light = new AreaLight(Quad(Point3f(x1, y1, z1), Vector3f(x2, y2, z2), Vector3f(x3, y3, z3)), Color(r, g, b));
-				((AreaLight*)light)->set_sample_size(3, 3);
+				((AreaLight*)light)->set_sample_size(6, 6);
 				scene.add_light(light);
 			} break;
 
 			case LIGHT_DIRECTION: {
+				float x = atof(args[0].c_str());
+				float y = atof(args[1].c_str());
+				float z = atof(args[2].c_str());
+				float r = atof(args[3].c_str()); float g = atof(args[4].c_str()); float b = atof(args[5].c_str());
 
+                Light *light = new DirectionalLight(Vector3f(x, y, z), Color(r, g, b));
+                scene.add_light(light);
 			} break;
 
 			// OBJECT CONFIGURATION
@@ -376,7 +383,7 @@ Color RayTracer::aa_compute(Cell c, int x, int y) {
             Vector3f jitter_h = grid_h * (((rand() % 60) / 100.0) - 0.3);
             Ray r(camera->get_position(), c.get_top_left() + grid_w/2 + grid_h/2 + jitter_w + jitter_h
                     + grid_w*i + grid_h*j);
-            total_c += scene.handle_ray(r, 1);
+            total_c += scene.handle_ray(r, 2);
         }
     }
     total_c /= gridx * gridy;
@@ -385,7 +392,7 @@ Color RayTracer::aa_compute(Cell c, int x, int y) {
 
 Color RayTracer::compute(Cell c, int x, int y) {
     Ray r(camera->get_position(), c.get_center());
-    return scene.handle_ray(r, 1);
+    return scene.handle_ray(r, 2);
 }
 
 

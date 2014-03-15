@@ -1,0 +1,11 @@
+To run code: 
+    1. make
+    2. ./raytracer image-XX
+    3. (output image is located in /img folder)
+
+./raytracer image-06
+
+0.6 seconds to render.
+
+Features:
+    Directional lights

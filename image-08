@@ -19,7 +19,7 @@ material textures/PoolBall14.png 1024 1024 # material 14
 material textures/PoolBall15.png 1024 1024 # material 15
 
 
-output img/pool_forward_dof.png
+output img/image-08.png
 thread 8
 antialiasing false
 

@@ -22,11 +22,20 @@ diffuse 0.3 0.05 0.2
 specular 0.05 0.05 0.05
 specular_power 80
 
+sphere -90 -90 100   20
+reflection 0.25
+up_vector 0 1 0
+direction_vector 0 0 1
+ambient 0.18 0.08 0.11 
+diffuse 0.5 0.1 0.4 
+specular 0.8 0.8 0.8 
+specular_power 256 
+
 
 sphere 0 0 50 100 
 rotate    0 0 1  -45
 scale     1 2 1
-reflection 0.3
+reflection 0.1
 up_vector 0 1 0
 direction_vector 0 0 1
 ambient 0.25 0.08 0.25 

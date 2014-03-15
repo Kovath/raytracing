@@ -1,0 +1,14 @@
+To run code: 
+    1. make
+    2. ./raytracer image-XX
+    3. (output image is located in /img folder)
+
+./raytracer image-08
+
+68 seconds to render.
+
+Features:
+    Texture-mapping
+    Clear depth-of-field effect
+    Arbitrary orientations for textures
+    Reflections

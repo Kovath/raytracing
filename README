@@ -3,3 +3,33 @@ Darren Tsung (cs184-cc) and Kevin Yang (cs184-fz)
 Code compiles and runs on the hive machines.
 
 Location of source code: cs184-cc (DT) submitted the project on the hive10 machine. 
+
+Images:
+image-01 | A rotated and streched sphere and a small sphere underneath to 
+         | show the stretched sphere being reflected
+image-02 | A gourd (.obj file)
+image-03 | The gourd rotated by a non-axis-aligned rotation
+image-04 | An untransformed triangle.
+image-05 | The triangle from above, rotated 90 clockwise, scaled by 2, and translated up by 100.
+image-06 | A few spheres showing a directional light
+image-07 | Soft shadows with area light
+image-08 | Texture-mapped billiard balls showing depth of field and different camera configurations
+image-09 | Billiard balls showing orientation for texture mapping and depth of field
+image-10 | A lamp (.obj file) with antialiasing
+
+
+Feature List:
+    Transformed spheres (scales and rotations)
+    Polygons (.obj files)
+    Phong shading 
+    Shadows (shadow rays)
+    Reflections
+    Linear transformations
+    Point and Directional lights
+    Writing output to .pngs
+    Threading 
+    Anti-aliasing
+    Depth-of-field
+    Texture-mapping
+    Area lights / soft shadows
+

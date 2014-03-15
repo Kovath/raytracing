@@ -1,0 +1,13 @@
+To run code: 
+    1. make
+    2. ./raytracer image-XX
+    3. (output image is located in /img folder)
+
+./raytracer image-01
+
+3.77 seconds to render.
+
+Features:
+    A rotated and streched sphere.
+    Reflections off a streched sphere.
+    Shadows off both spheres.

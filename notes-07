@@ -1,0 +1,12 @@
+To run code: 
+    1. make
+    2. ./raytracer image-XX
+    3. (output image is located in /img folder)
+
+./raytracer image-07
+
+11.08 seconds to render.
+
+Features:
+    Soft shadows (area lights)
+    Area light reflection
