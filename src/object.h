@@ -2,6 +2,8 @@
 #define CS184_OBJECT_H
 #include "include.h"
 
+#include <map>
+#include "triangle.h"
 #include "primitive.h"
 
 class Object : public Primitive {
@@ -12,21 +14,14 @@ public:
 	Vector3f get_normal(Point3f point);
 	
 private:
-	struct FaceVertex {
+	struct Vertex {
 		static const int INVALID_VALUE = -1;
 	
 		int v, vt, vn;
-		FaceVertex();
-	};
-	
-	struct Face {
-		vector<FaceVertex> vertices;
+		Vertex();
 	};
 
-	vector<Point3f> v;
-	vector<Point3f> vt;
-	vector<Vector3f> vn;
-	vector<Face> f;
+	vector<Triangle> f;
 };
 
 #endif

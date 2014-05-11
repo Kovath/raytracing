@@ -69,6 +69,29 @@ bool Triangle::did_ray_hit(Ray ray, float *intersection_t, float epsilon /* = 0 
     return true;
 }
 
+bool Triangle::contains_point(Point3f point, float epsilon) {
+	Vector3f v1 = p1 - p0;
+	Vector3f v2 = p2 - p0;
+	Vector3f expected = point - p0;
+	
+	Matrix2f A; 
+	A << v1[0], v2[0], 
+	     v1[1], v2[1];
+	Vector2f expected2f; 
+	expected2f << expected[0], 
+	              expected[1];
+	
+	// so using barycentric coord, we remove the z values solve for [v1 v2]x = point - p0
+	// afterwards using the calculated values, we see if the z values fit.
+	// x must have values from 0-1
+	Vector2f x = A.inverse() * expected2f;
+	if(x[0] < 0.0 || 1.0 < x[0] || x[1] < 0.0 || 1.0 < x[1]) 
+		return false;
+	
+	float expected_z = (x[0] * v1[2]) + (x[1] * v2[2]);
+	return (expected[2] - epsilon) <= expected_z && expected_z <= (expected[2] + epsilon);
+}
+
 Vector3f Triangle::get_normal(Point3f point) {
     Vector3f ret = (p1 - p0).cross(p2 - p0);
     ret.normalize();

@@ -1,0 +1,25 @@
+output image-02.png
+thread 8
+antialiasing true
+antialiasing_samples 3 3
+
+# camera config
+cam_position -0.2 0.2 3
+cam_direction 0 0 -1
+cam_orientation 0 1 0
+cam_resolution 1000 1000
+cam_fov 45 45
+
+# gourd
+object gourd.obj
+ambience 0.8 0.8 0.8 
+diffuse 0.5 0.1 0.4 
+specular 0.8 0.8 0.8 
+specular_power 80
+reflection 0
+refraction 0
+
+
+# lights
+point_light -200 200 200 1 1 1
+point_light 200 200 200 0.5 0.5 0.5

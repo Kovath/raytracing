@@ -43,6 +43,7 @@ int main(int argc, char** argv) {
 	
 		program_timer.stop();
 		cout << "Total Time:\t" << program_timer.get_duration_s() << " s" << endl;
+		cout << endl;
 	}
 	
 	return 0;

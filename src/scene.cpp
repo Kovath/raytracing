@@ -48,7 +48,8 @@ Color Scene::handle_ray(Ray r, int limit /* = 1 */) {
     }
     // if we hit an object
     if (did_collide(r, t, &obj)) {
-        Transform<float, 3, Affine> inverse_tr = obj->T.get_inverse_transformation();
+		//return Color(1, 1, 1);
+		Transform<float, 3, Affine> inverse_tr = obj->T.get_inverse_transformation();
         Transform<float, 3, Affine> tr = obj->T.get_transformation();
 
         // transform the ray
